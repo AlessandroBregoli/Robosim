@@ -23,12 +23,12 @@ class Robosim_agent(Agent):
 
     def find_goal(self):
         best_goal = None
-        best_score = -999999
+        best_score = 0
         for x,y in self.model.border_cell:
             score = self.geometric_distance((x,y), self.pos)**2
             for agent in self.model.schedule.agents:
                 score -= self.geometric_distance((x,y), agent.pos) **2
-            if score > best_score:
+            if score > best_score or best_goal == None:
                 best_score = score
                 best_goal = (x,y)
         return best_goal
