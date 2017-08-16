@@ -36,6 +36,8 @@ class Robosim_model(Model):
         for agent in self.schedule.agents:
             self.look(agent)
         self.find_border_cell()
+        if len(self.border_cell) == 0:
+            return
         self.schedule.step()
 
     #Controlla se esistono celle esplorate che confinano con celle non esplorate
