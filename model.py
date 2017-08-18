@@ -7,6 +7,7 @@ import random
 from enum import Enum
 class Robosim_model(Model):
     def __init__(self, num_agents, simulation_map):
+        super().__init__()
         assert isinstance(simulation_map, np.ndarray)
         self.simulation_map = simulation_map
         self.num_agents = num_agents
@@ -26,8 +27,8 @@ class Robosim_model(Model):
             while not free_cell:
                 x = random.randrange(self.grid.width)
                 y = random.randrange(self.grid.height)
-                if self.grid.is_cell_empty((x,y)):
-                    self.grid.place_agent(a, (x,y))
+                if self.grid.is_cell_empty((x,self.simulation_map.shape[0] - y -1 )) and self.simulation_map[y][x] == CellState.EMPTY:
+                    self.grid.place_agent(a, (x ,self.simulation_map.shape[0] - y -1))
                     free_cell = True
         
         self.border_cell = []
@@ -39,6 +40,7 @@ class Robosim_model(Model):
         if len(self.border_cell) == 0:
             return
         self.schedule.step()
+        print_map(self.explored_map)
 
     #Controlla se esistono celle esplorate che confinano con celle non esplorate
     def find_border_cell(self):
@@ -73,7 +75,7 @@ class Robosim_model(Model):
 
     #Dato un agente la funzione esplora la mappa nel suo raggio visivo
     def look(self, agent):
-         x_range, y_range = self.get_map_range(1, agent.pos)
+         x_range, y_range = self.get_map_range(1, (agent.pos[0], self.simulation_map.shape[0] - agent.pos[1] - 1))
          for x1 in x_range:
              for y1 in y_range:
                  self.explored_map[y1][x1] = self.simulation_map[y1][x1]
