@@ -2,6 +2,7 @@ from mesa import Model
 from mesa.time import RandomActivation
 from agent import Robosim_agent
 from mesa.space import SingleGrid
+from mesa.datacollection import DataCollector
 import numpy as np
 import random
 from enum import Enum
@@ -32,6 +33,8 @@ class Robosim_model(Model):
                     free_cell = True
         
         self.border_cell = []
+        self.datacollector = DataCollector(
+            model_reporters={"Esplorate": conta_esplorate})
 
     def step(self):
         for agent in self.schedule.agents:
@@ -40,6 +43,7 @@ class Robosim_model(Model):
         if len(self.border_cell) == 0:
             return
         self.schedule.step()
+        self.datacollector.collect(self)
         print_map(self.explored_map)
 
     #Controlla se esistono celle esplorate che confinano con celle non esplorate
@@ -85,6 +89,9 @@ class CellState(Enum):
     EMPTY = 1
     OBSTACLE = 2
 
+def conta_esplorate(model): 
+	mappa = model.explored_map
+	return np.count_nonzero(mappa != CellState.UNEXPLORED)
 def load_map(path):
     tmp_ret = []
     with open(path) as mappa:

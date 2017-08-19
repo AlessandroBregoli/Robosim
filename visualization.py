@@ -1,4 +1,5 @@
 from mesa.visualization.modules import CanvasGrid
+from mesa.visualization.modules import ChartModule
 from mesa.visualization.ModularVisualization import ModularServer
 import model
 import numpy as np
@@ -42,11 +43,14 @@ class MyCanvas(CanvasGrid):
         agenti[0] = objs + agenti.get(0)
         return agenti
 
-grid = MyCanvas(agent_portrayal, mappa.shape[1], mappa.shape[0], 500, 500)
+grid = MyCanvas(agent_portrayal, mappa.shape[1], mappa.shape[0], 400, 400)
+chart = ChartModule([{"Label": "Esplorate",
+                      "Color": "Black"}],
+                    data_collector_name='datacollector')
 
 
 server = ModularServer(model.Robosim_model,
-                       [grid],
+                       [grid, chart],
                        "Money Model",
                        {"num_agents": 3,"simulation_map":mappa})
 server.launch()
