@@ -41,6 +41,7 @@ class Robosim_model(Model):
             self.look(agent)
         self.find_border_cell()
         if len(self.border_cell) == 0:
+            self.running = False
             return
         self.schedule.step()
         self.datacollector.collect(self)
