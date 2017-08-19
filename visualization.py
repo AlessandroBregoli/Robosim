@@ -1,6 +1,8 @@
 from mesa.visualization.modules import CanvasGrid
 from mesa.visualization.ModularVisualization import ModularServer
 import model
+import numpy as np
+import collections
 
 def agent_portrayal(agent):
     portrayal = {"Shape": "circle",
@@ -11,8 +13,36 @@ def agent_portrayal(agent):
     return portrayal
 
 mappa = model.load_map("mappa_1.txt")
+class MyCanvas(CanvasGrid):
+    def render(self, mod):
+        agenti = super().render(mod)
+        mappa = mod.explored_map
+        assert isinstance(mappa, np.ndarray)
+        objs = []
+        for y in range(mappa.shape[0]):
+            for x in range(mappa.shape[1]):
+                if mappa[y][x] == model.CellState.OBSTACLE:
+                    objs += [{"Shape": "rect",
+                             "Color": "#444",
+                             "Filled": "true",
+                             "Layer": 0,
+                             "h": 1,
+                             "w": 1,
+                             "x": x,
+                             "y": mappa.shape[0]-y-1}]
+                elif mappa[y][x] == model.CellState.UNEXPLORED:
+                    objs += [{"Shape": "rect",
+                             "Color": "#dadada",
+                             "Filled": "true",
+                             "Layer": 0,
+                             "h": 1,
+                             "w": 1,
+                             "x": x,
+                             "y": mappa.shape[0]-y-1}]
+        agenti[0] = objs + agenti.get(0)
+        return agenti
 
-grid = CanvasGrid(agent_portrayal, mappa.shape[1], mappa.shape[0], 500, 500)
+grid = MyCanvas(agent_portrayal, mappa.shape[1], mappa.shape[0], 500, 500)
 
 
 server = ModularServer(model.Robosim_model,
