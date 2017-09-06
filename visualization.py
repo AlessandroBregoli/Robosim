@@ -52,5 +52,5 @@ chart = ChartModule([{"Label": "Esplorate",
 server = ModularServer(model.Robosim_model,
                        [grid, chart],
                        "Money Model",
-                       {"num_agents": 3,"simulation_map":mappa})
+                       {"num_agents": 10,"simulation_map":mappa})
 server.launch()

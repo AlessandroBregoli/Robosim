@@ -2,13 +2,13 @@ from mesa import Agent
 import model
 
 class Robosim_agent(Agent):
-    def __init__(self, unique_id, model, agent_stubborness = 0.1):
+    def __init__(self, unique_id, model, agent_stubborness = 0.75):
         super().__init__(unique_id, model)
         self.old_goal = None
-        self.old_goal_w = None
         self.path = None
+        self.smelly_cells = []
         self.agent_stubborness = agent_stubborness
-    def step_old(self):
+    def step(self):
         goal = self.find_goal()
         best_direction = None
         best_distance = 99999
@@ -17,16 +17,19 @@ class Robosim_agent(Agent):
             for y in y_range:
                 if x == self.pos[0] and y == self.model.simulation_map.shape[0] - self.pos[1] - 1:
                     continue
+                if (x,y) in self.smelly_cells:
+                    continue
                 if self.model.grid.is_cell_empty((x,self.model.simulation_map.shape[0] - y - 1)) and self.model.simulation_map[y][x] != model.CellState.OBSTACLE:
                     distance = self.geometric_distance((x,y), goal)
                     if distance < best_distance:
                         best_distance = distance
                         best_direction = (x,y)
         if best_direction != None:
+            self.smelly_cells.append(best_direction)
             best_direction = (best_direction[0], self.model.simulation_map.shape[0] - best_direction[1] - 1)
             self.model.grid.move_agent(self, best_direction)
 
-    def step(self):
+    def step_pesante(self):
         goal = self.find_goal()
         if goal == None:
             return
@@ -64,9 +67,10 @@ class Robosim_agent(Agent):
                 best_goal = (x,y)
             if (x,y) == self.old_goal:
                 recalculated_old_goal_score = score
-            if recalculated_old_goal_score * self.agent_stubborness < best_score and self.old_goal != None:
-                return self.old_goal
-            self.old_goal_w = score
+        if (recalculated_old_goal_score * self.agent_stubborness < best_score and self.old_goal != None) or self.old_goal == best_goal:
+            return self.old_goal
+        self.old_goal = best_goal
+        self.smelly_cells = []
         return best_goal
     
     def modded_dijkstra(self, goal):
