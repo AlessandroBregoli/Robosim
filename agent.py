@@ -2,7 +2,7 @@ from mesa import Agent
 import model
 
 class Robosim_agent(Agent):
-    def __init__(self, unique_id, model, agent_stubborness = 0.5):
+    def __init__(self, unique_id, model, agent_stubborness = 0.1):
         super().__init__(unique_id, model)
         self.old_goal = None
         self.old_goal_w = None

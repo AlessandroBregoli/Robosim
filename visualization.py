@@ -13,7 +13,7 @@ def agent_portrayal(agent):
                  "r": 0.5}
     return portrayal
 
-mappa = model.load_map("mappa_1.txt")
+mappa = model.load_map("mappa_3.txt")
 class MyCanvas(CanvasGrid):
     def render(self, mod):
         agenti = super().render(mod)
