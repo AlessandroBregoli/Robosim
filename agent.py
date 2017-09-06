@@ -2,8 +2,12 @@ from mesa import Agent
 import model
 
 class Robosim_agent(Agent):
-    def __init__(self, unique_id, model):
+    def __init__(self, unique_id, model, agent_stubborness = 0.5):
         super().__init__(unique_id, model)
+        self.old_goal = None
+        self.old_goal_w = None
+        self.path = None
+        self.agent_stubborness = agent_stubborness
     def step_old(self):
         goal = self.find_goal()
         best_direction = None
@@ -26,19 +30,31 @@ class Robosim_agent(Agent):
         goal = self.find_goal()
         if goal == None:
             return
-        print(goal)
-        path = self.modded_dijkstra(goal)
+        #print(goal)
+        path = self.path
+        if goal != self.old_goal:
+            path = self.modded_dijkstra(goal)
         #print(path)
-        direction = goal
-        while path[direction] != (self.pos[0], self.model.simulation_map.shape[0] - self.pos[1] - 1):
-            print(direction)
-            direction = path[direction]
-        direction = (direction[0], self.model.simulation_map.shape[0] - direction[1] - 1)
+        is_cell_empty = False
+        while not is_cell_empty:
+            is_cell_empty = True
+            direction = goal
+        
+            while path[direction] != (self.pos[0], self.model.simulation_map.shape[0] - self.pos[1] - 1):
+                print(direction)
+                direction = path[direction]
+            direction = (direction[0], self.model.simulation_map.shape[0] - direction[1] - 1)
+            if not self.model.grid.is_cell_empty(direction):
+                path = self.modded_dijkstra(goal)
+                is_cell_empty = False
+        self.path = path
+        self.old_goal = goal
         self.model.grid.move_agent(self, direction)
         
     def find_goal(self):
         best_goal = None
         best_score = 0
+        recalculated_old_goal_score = 0
         for x,y in self.model.border_cell:
             score = self.geometric_distance((x,y), (self.pos[0], self.model.simulation_map.shape[0] - self.pos[1] - 1))**2
             for agent in self.model.schedule.agents:
@@ -46,6 +62,11 @@ class Robosim_agent(Agent):
             if score < best_score or best_goal == None:
                 best_score = score
                 best_goal = (x,y)
+            if (x,y) == self.old_goal:
+                recalculated_old_goal_score = score
+            if recalculated_old_goal_score * self.agent_stubborness < best_score and self.old_goal != None:
+                return self.old_goal
+            self.old_goal_w = score
         return best_goal
     
     def modded_dijkstra(self, goal):
