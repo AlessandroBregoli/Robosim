@@ -41,7 +41,7 @@ class Robosim_agent(Agent):
             direction = goal
         
             while path[direction] != (self.pos[0], self.model.simulation_map.shape[0] - self.pos[1] - 1):
-                print(direction)
+                #print(direction)
                 direction = path[direction]
             direction = (direction[0], self.model.simulation_map.shape[0] - direction[1] - 1)
             if not self.model.grid.is_cell_empty(direction):
@@ -84,7 +84,7 @@ class Robosim_agent(Agent):
             u = min(dist, key=lambda k: dist[k] if k in v_set else float("inf"))
             if dist[u] == float("inf"):
                 return path
-            print(u, dist[u])
+            #print(u, dist[u])
             v_set.remove(u)
             x_range, y_range = self.model.get_map_range(1, u)
             for x in x_range:

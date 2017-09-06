@@ -45,7 +45,7 @@ class Robosim_model(Model):
             return
         self.schedule.step()
         self.datacollector.collect(self)
-        print_map(self.explored_map)
+        #print_map(self.explored_map)
 
     #Controlla se esistono celle esplorate che confinano con celle non esplorate
     def find_border_cell(self):
