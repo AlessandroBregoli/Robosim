@@ -55,6 +55,6 @@ agent_slider = UserSettableParameter('slider', "Number of agents", 3,1,50,1)
 
 server = ModularServer(model.Robosim_model,
                        [grid, chart],
-                       "Money Model",
+                       "Robosim",
                        {"num_agents": agent_slider,"simulation_map":mappa, "stubborness": stub_slider})
 server.launch()
