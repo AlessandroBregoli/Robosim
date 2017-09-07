@@ -45,7 +45,7 @@ class MyCanvas(CanvasGrid):
         agenti[0] = objs + agenti.get(0)
         return agenti
 
-grid = MyCanvas(agent_portrayal, mappa.shape[1], mappa.shape[0], 400, 400)
+grid = MyCanvas(agent_portrayal, mappa.shape[1], mappa.shape[0], mappa.shape[1]*12, mappa.shape[0]*12)
 chart = ChartModule([{"Label": "Esplorate",
                       "Color": "Black"}],
                     data_collector_name='datacollector')

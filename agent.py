@@ -1,6 +1,7 @@
 from mesa import Agent
 import model
 import astar
+import sys
 
 class Robosim_agent(Agent):
     def __init__(self, unique_id, model, agent_stubborness = 0.75):
@@ -46,9 +47,11 @@ class Robosim_agent(Agent):
             if len(path) < 1:
                 return
             direction = path.pop()
-            if not self.model.grid.is_cell_empty(direction):
+            normdirection = self.model.mesa2norm(direction)
+            if not self.model.grid.is_cell_empty(direction) or self.model.simulation_map[normdirection[::-1]] == model.CellState.OBSTACLE:
+                print("occupata cella ", direction)
+                print("path", path)
                 path = None
-                print("occupato!!!!")
                 continue
             self.model.grid.move_agent(self, direction)
             self.path = path
