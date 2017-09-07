@@ -51,9 +51,10 @@ chart = ChartModule([{"Label": "Esplorate",
                     data_collector_name='datacollector')
 
 stub_slider = UserSettableParameter('slider', "Stubborness", 0.5, 0, 1, 0.05)
+agent_slider = UserSettableParameter('slider', "Number of agents", 3,1,50,1)
 
 server = ModularServer(model.Robosim_model,
                        [grid, chart],
                        "Money Model",
-                       {"num_agents": 3,"simulation_map":mappa, "stubborness": stub_slider})
+                       {"num_agents": agent_slider,"simulation_map":mappa, "stubborness": stub_slider})
 server.launch()
