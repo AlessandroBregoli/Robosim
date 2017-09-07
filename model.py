@@ -5,6 +5,7 @@ from mesa.space import SingleGrid
 from mesa.datacollection import DataCollector
 import numpy as np
 import random
+import astar
 from enum import Enum
 class Robosim_model(Model):
     def __init__(self, num_agents, simulation_map, stubborness):
@@ -15,8 +16,8 @@ class Robosim_model(Model):
         self.stubborness = stubborness
         self.schedule = RandomActivation(self)
 
-        height = self.simulation_map.shape[0]
-        width = self.simulation_map.shape[1]
+        height = self.height = self.simulation_map.shape[0]
+        width = self.width = self.simulation_map.shape[1]
 
         self.explored_map = np.empty(self.simulation_map.shape, dtype=np.object)
         self.explored_map.fill(CellState.UNEXPLORED)
@@ -85,7 +86,10 @@ class Robosim_model(Model):
          for x1 in x_range:
              for y1 in y_range:
                  self.explored_map[y1][x1] = self.simulation_map[y1][x1]
-
+    def norm2mesa(self, pos): 
+        return (pos[0], (self.simulation_map.shape[0] - pos[1] - 1))
+    def mesa2norm(self, pos):
+        return self.norm2mesa(pos)
 class CellState(Enum):
     UNEXPLORED = 0
     EMPTY = 1

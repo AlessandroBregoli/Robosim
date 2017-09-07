@@ -1,5 +1,6 @@
 from mesa import Agent
 import model
+import astar
 
 class Robosim_agent(Agent):
     def __init__(self, unique_id, model, agent_stubborness = 0.75):
@@ -8,7 +9,7 @@ class Robosim_agent(Agent):
         self.path = None
         self.smelly_cells = []
         self.agent_stubborness = agent_stubborness
-    def step(self):
+    def step_simple(self):
         goal = self.find_goal()
         best_direction = None
         best_distance = 99999
@@ -28,12 +29,36 @@ class Robosim_agent(Agent):
             self.smelly_cells.append(best_direction)
             best_direction = (best_direction[0], self.model.simulation_map.shape[0] - best_direction[1] - 1)
             self.model.grid.move_agent(self, best_direction)
-
+    def step(self):
+        goal = self.find_goal()
+        if goal == None:
+            return
+        path = self.path
+        #explored_map: coordinate normali
+        #self.pos: coordinate mesa
+        #goal: coordinate normali
+        while True:
+            if goal != self.old_goal or path is None:
+                normpos = self.model.mesa2norm(self.pos)
+                path = astar.find_path(self.model.explored_map, normpos, goal)
+                path.pop()
+                path = [self.model.norm2mesa(x) for x in path]
+            if len(path) < 1:
+                return
+            direction = path.pop()
+            if not self.model.grid.is_cell_empty(direction):
+                path = None
+                print("occupato!!!!")
+                continue
+            self.model.grid.move_agent(self, direction)
+            self.path = path
+            self.old_goal = goal
+            break
     def step_pesante(self):
         goal = self.find_goal()
         if goal == None:
             return
-        #print(goal)
+        print(goal)
         path = self.path
         if goal != self.old_goal:
             path = self.modded_dijkstra(goal)
@@ -69,7 +94,7 @@ class Robosim_agent(Agent):
                 recalculated_old_goal_score = score
         if (recalculated_old_goal_score * self.agent_stubborness < best_score and self.old_goal != None) or self.old_goal == best_goal:
             return self.old_goal
-        self.old_goal = best_goal
+        #self.old_goal = best_goal
         self.smelly_cells = []
         return best_goal
     
@@ -105,8 +130,6 @@ class Robosim_agent(Agent):
             #if u == goal:
             #    return path
         return path
-        
-
 
     def geometric_distance(self, pos1, pos2):
         return ((pos1[0]-pos2[0])**2 + (pos1[1]-pos2[1])**2)**(1/2)

@@ -1,0 +1,74 @@
+import numpy as np
+import model
+
+def dist(pos1, pos2):
+    return ((pos1[0]-pos2[0])**2 + (pos1[1]-pos2[1])**2)**(1/2)
+class Node:
+    gScore = float('inf')
+    fScore = float('inf')
+    neighbors = []
+    def __init__(self, pos):
+        self.pos = pos
+    def __str__(self):
+        return """pos: {},
+gScore: {},
+fScore: {}""".format(self.pos,
+                     self.gScore,
+                     self.fScore)
+def find_path(explored_map, start, goal):
+    #trasformazione coordinate?
+    openSet = set()
+    closedSet = set()
+    cameFrom = {}
+    #print(explored_map.shape, goal)
+    nodes = np.empty(explored_map.shape, dtype=np.object)
+    for x, cellContent in np.ndenumerate(explored_map):
+        if cellContent == model.CellState.OBSTACLE:
+            continue
+        n = Node(x[::-1])
+        nodes[x] = n
+        openSet.add(n)
+    for x, node in np.ndenumerate(nodes):
+        if node is not None:
+            node.neighbors = nodes[x[0]-1:x[0]+2, x[1]-1:x[1]+2].flatten()
+    nodes[start[::-1]].gScore = 0
+    nodes[start[::-1]].fScore = estimate(start,goal)
+    while len(openSet) > 0:
+        current = min(openSet, key=lambda x: x.fScore)
+        if current == nodes[goal[::-1]]:
+            return reconstruct_path(cameFrom, current)
+        openSet.remove(current)
+        closedSet.add(current)
+        for x in current.neighbors: 
+            if x in closedSet or x is None:
+                continue
+            
+            openSet.add(x) #potrebbe già essere presente ma tanto è un set
+            tentative_gScore = current.gScore + dist(current.pos, x.pos)
+            if tentative_gScore >= x.gScore:
+                continue
+            cameFrom[x] = current
+            x.gScore = tentative_gScore
+            x.fScore = x.gScore + estimate (x.pos, goal)
+    return None
+
+
+def estimate(start,goal):
+    return dist(start, goal)
+    
+def reconstruct_path(cameFrom,current):
+    total_path = [current.pos]
+    while current in cameFrom:
+        current = cameFrom[current]
+        total_path.append(current.pos)
+    return total_path
+#test
+#import model
+#mappa = model.load_map("mappa_3.txt")
+#modello = model.Robosim_model(1, mappa, 0.5)
+#path = find_path(modello.explored_map, (2,2), (6,17))
+#print([x.pos for x in path])
+#for x in path:
+#    mappa[x.pos] = model.CellState.OBSTACLE
+#model.print_map(mappa)
+
