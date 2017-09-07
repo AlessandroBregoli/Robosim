@@ -38,22 +38,33 @@ class Robosim_agent(Agent):
         #explored_map: coordinate normali
         #self.pos: coordinate mesa
         #goal: coordinate normali
+        avoidCells = [] #coordinate normali
+        normpos = self.model.mesa2norm(self.pos)
+        ricalcolo = 0
         while True:
             if goal != self.old_goal or path is None:
-                normpos = self.model.mesa2norm(self.pos)
-                path = astar.find_path(self.model.explored_map, normpos, goal)
-                path.pop()
-                path = [self.model.norm2mesa(x) for x in path]
+                path = astar.find_path(self.model.explored_map, self.model,
+                                       normpos, goal, avoidCells)
+                if path is None:
+                    return
+                path.pop() #togliere primo passo perché è cella attuale
             if len(path) < 1:
                 return
             direction = path.pop()
-            normdirection = self.model.mesa2norm(direction)
-            if not self.model.grid.is_cell_empty(direction) or self.model.simulation_map[normdirection[::-1]] == model.CellState.OBSTACLE:
-                print("occupata cella ", direction)
-                print("path", path)
+            mesadirection = self.model.norm2mesa(direction)
+            if not self.model.grid.is_cell_empty(mesadirection) or self.model.simulation_map[direction[::-1]] == model.CellState.OBSTACLE:
+                if direction == goal:
+                    goal = self.find_goal()
+                avoidCells += direction
+                print("occupata cella", direction)
+                print("path", path, direction)
                 path = None
-                continue
-            self.model.grid.move_agent(self, direction)
+                ricalcolo += 1
+                if ricalcolo < 4:
+                    continue
+                else:
+                    return
+            self.model.grid.move_agent(self, mesadirection)
             self.path = path
             self.old_goal = goal
             break

@@ -15,7 +15,7 @@ gScore: {},
 fScore: {}""".format(self.pos,
                      self.gScore,
                      self.fScore)
-def find_path(explored_map, start, goal):
+def find_path(explored_map, modello, start, goal, avoidCells):
     #trasformazione coordinate?
     openSet = set()
     closedSet = set()
@@ -25,13 +25,19 @@ def find_path(explored_map, start, goal):
     for x, cellContent in np.ndenumerate(explored_map):
         if cellContent == model.CellState.OBSTACLE:
             continue
+        if x[::-1] in avoidCells:
+            print("avoid", x[::-1])
+            continue
         n = Node(x[::-1])
         nodes[x] = n
         openSet.add(n)
     for x, node in np.ndenumerate(nodes):
         if node is not None:
             node.neighbors = nodes[x[0]-1:x[0]+2, x[1]-1:x[1]+2].flatten()
-    nodes[start[::-1]].gScore = 0
+    try:
+        nodes[start[::-1]].gScore = 0
+    except:
+        print(avoidCells, start)
     nodes[start[::-1]].fScore = estimate(start,goal)
     while len(openSet) > 0:
         current = min(openSet, key=lambda x: x.fScore)
