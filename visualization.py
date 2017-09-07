@@ -1,6 +1,8 @@
 from mesa.visualization.modules import CanvasGrid
 from mesa.visualization.modules import ChartModule
 from mesa.visualization.ModularVisualization import ModularServer
+from mesa.visualization.UserParam import UserSettableParameter
+
 import model
 import numpy as np
 import collections
@@ -48,9 +50,10 @@ chart = ChartModule([{"Label": "Esplorate",
                       "Color": "Black"}],
                     data_collector_name='datacollector')
 
+stub_slider = UserSettableParameter('slider', "Stubborness", 0.5, 0, 1, 0.05)
 
 server = ModularServer(model.Robosim_model,
                        [grid, chart],
                        "Money Model",
-                       {"num_agents": 10,"simulation_map":mappa})
+                       {"num_agents": 3,"simulation_map":mappa, "stubborness": stub_slider})
 server.launch()

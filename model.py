@@ -7,11 +7,12 @@ import numpy as np
 import random
 from enum import Enum
 class Robosim_model(Model):
-    def __init__(self, num_agents, simulation_map):
+    def __init__(self, num_agents, simulation_map, stubborness):
         super().__init__()
         assert isinstance(simulation_map, np.ndarray)
         self.simulation_map = simulation_map
         self.num_agents = num_agents
+        self.stubborness = stubborness
         self.schedule = RandomActivation(self)
 
         height = self.simulation_map.shape[0]
@@ -22,7 +23,7 @@ class Robosim_model(Model):
 
         self.grid = SingleGrid(width, height, False)
         for i in range(self.num_agents):
-            a = Robosim_agent(i, self)
+            a = Robosim_agent(i, self, self.stubborness)
             self.schedule.add(a)
             free_cell = False
             while not free_cell:
