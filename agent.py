@@ -99,7 +99,8 @@ class Robosim_agent(Agent):
     def find_goal(self):
         best_goal = None
         best_score = 0
-        recalculated_old_goal_score = 0
+        recalculated_old_goal_score = float("inf")
+        print(self.model.border_cell)
         for x,y in self.model.border_cell:
             score = self.geometric_distance((x,y), (self.pos[0], self.model.simulation_map.shape[0] - self.pos[1] - 1))**2
             for agent in self.model.schedule.agents:
@@ -111,10 +112,11 @@ class Robosim_agent(Agent):
                 best_goal = (x,y)
             if (x,y) == self.old_goal:
                 recalculated_old_goal_score = score
-        if (recalculated_old_goal_score * self.agent_stubborness < best_score and self.old_goal != None) or self.old_goal == best_goal:
+        if (recalculated_old_goal_score * self.agent_stubborness < best_score  or self.old_goal == best_goal) and self.old_goal != None:
             return self.old_goal
         #self.old_goal = best_goal
         self.smelly_cells = []
+        #print("Best goal:" , best_goal)
         return best_goal
     
     def modded_dijkstra(self, goal):
