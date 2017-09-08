@@ -10,8 +10,10 @@ class Robosim_agent(Agent):
         self.path = None
         self.smelly_cells = []
         self.agent_stubborness = agent_stubborness
+        self.goal = None
     def step_simple(self):
         goal = self.find_goal()
+        self.old_goal = best_goal
         best_direction = None
         best_distance = 99999
         x_range, y_range = self.model.get_map_range(1,(self.pos[0], self.model.simulation_map.shape[0] - self.pos[1] - 1))
@@ -66,7 +68,7 @@ class Robosim_agent(Agent):
                     return
             self.model.grid.move_agent(self, mesadirection)
             self.path = path
-            self.old_goal = goal
+            self.old_goal = self.goal = goal
             break
     def step_pesante(self):
         goal = self.find_goal()
