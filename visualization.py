@@ -60,7 +60,6 @@ class MyCanvas(CanvasGrid):
                     "w" : 0
                 }]
                 objs += asd
-                print(asd)
         agenti[0] = objs + agenti.get(0)
         return agenti
 

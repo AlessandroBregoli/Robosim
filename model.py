@@ -52,23 +52,30 @@ class Robosim_model(Model):
     #Controlla se esistono celle esplorate che confinano con celle non esplorate
     def find_border_cell(self):
         self.border_cell.clear()
-        for x in range(self.grid.width):
-            for y in range(self.grid.height):
-                if self.explored_map[y][x] != CellState.EMPTY:
-                    continue
-                x_range, y_range = self.get_map_range(1, (x,y))
-                is_border_cell = False
-                for x1 in x_range:
-                    if is_border_cell:
-                        break
-                    for y1 in y_range:
-                        if x != x1 and y != y1:
-                            if self.explored_map[y1][x1] == CellState.UNEXPLORED:
-                                is_border_cell = True
-                                break
-                if is_border_cell:
-                    self.border_cell.append((x,y))
-    
+        for (y,x), val in np.ndenumerate(self.explored_map):
+            if val != CellState.EMPTY:
+                continue
+            vicinato = self.explored_map[y-1 : y+2, x-1 : x+2].flatten()
+            if CellState.UNEXPLORED in vicinato:
+                self.border_cell += [(x,y)]
+        #for x in range(self.grid.width):
+        #    for y in range(self.grid.height):
+        #        if self.explored_map[y][x] != CellState.EMPTY:
+        #            continue
+        #        x_range, y_range = self.get_map_range(1, (x,y))
+        #        is_border_cell = False
+        #        for x1 in x_range:
+        #            if is_border_cell:
+        #                break
+        #            for y1 in y_range:
+        #                if x != x1 and y != y1:
+        #                    if self.explored_map[y1][x1] == CellState.UNEXPLORED:
+        #                        is_border_cell = True
+        #                        break
+        #        if is_border_cell:
+        #            self.border_cell.append((x,y))
+                #print(self.border_cell, )
+        #print(len(self.border_cell), len(asd))
     #Dato un raggio e una posizione genera 2 range che rappresentano in quadrato di lato radius             
     def get_map_range(self,radius, pos):
         x = pos[0]
