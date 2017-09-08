@@ -13,7 +13,8 @@ class Robosim_agent(Agent):
         self.goal = None
     def step_simple(self):
         goal = self.find_goal()
-        self.old_goal = best_goal
+        self.old_goal = goal
+        print(goal)
         best_direction = None
         best_distance = 99999
         x_range, y_range = self.model.get_map_range(1,(self.pos[0], self.model.simulation_map.shape[0] - self.pos[1] - 1))
@@ -102,6 +103,8 @@ class Robosim_agent(Agent):
         for x,y in self.model.border_cell:
             score = self.geometric_distance((x,y), (self.pos[0], self.model.simulation_map.shape[0] - self.pos[1] - 1))**2
             for agent in self.model.schedule.agents:
+                if agent.unique_id == self.unique_id:
+                    continue
                 score -= self.geometric_distance((x,y), (agent.pos[0], self.model.simulation_map.shape[0] - agent.pos[1] - 1)) **2
             if score < best_score or best_goal == None:
                 best_score = score
