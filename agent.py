@@ -17,20 +17,29 @@ class Robosim_agent(Agent):
         best_distance = 99999
         normpos = self.model.mesa2norm(self.pos)
         x_range, y_range = self.model.get_map_range(1, normpos)
-        for x in x_range:
-            for y in y_range:
-                if (x,y) == normpos:
-                    continue
-                if (x,y) in self.smelly_cells:
-                    continue
-                mesaxy = self.model.norm2mesa((x,y))
-                if self.model.grid.is_cell_empty(mesaxy) and self.model.simulation_map[y][x] != model.CellState.OBSTACLE:
-                    distance = self.geometric_distance((x,y), goal)
-                    if distance < best_distance:
-                        best_distance = distance
-                        best_direction = (x,y)
+        direction_found = False
+        while not direction_found:
+            direction_found = True           
+            for x in x_range:
+                for y in y_range:
+                    if (x,y) == normpos:
+                        continue
+                    if (x,y) in self.smelly_cells:
+                        continue
+                    mesaxy = self.model.norm2mesa((x,y))
+                    if self.model.grid.is_cell_empty(mesaxy) and self.model.simulation_map[y][x] != model.CellState.OBSTACLE:
+                        distance = self.geometric_distance((x,y), goal)
+                        if distance < best_distance:
+                            best_distance = distance
+                            best_direction = (x,y)
+            if best_direction == None and goal != None and len(self.smelly_cells) != 0:
+                print(self.unique_id)
+                self.old_goal = None
+                goal = self.find_goal()
+                self.old_goal = self.goal = goal
+                direction_found = False
         if best_direction != None:
-            self.smelly_cells.append(best_direction)
+            self.smelly_cells.append(self.model.mesa2norm(self.pos))
             #best_direction = (best_direction[0], self.model.simulation_map.shape[0] - best_direction[1] - 1)
             best_direction = self.model.norm2mesa(best_direction)
             self.model.grid.move_agent(self, best_direction)
