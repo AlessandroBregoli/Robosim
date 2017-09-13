@@ -62,7 +62,7 @@ class MyCanvas(CanvasGrid):
         agenti[0] = objs + agenti.get(0)
         return agenti
 
-def visualize(mappa, num_agents=3, stubborness=0.5, seed= None):
+def visualize(mappa, num_agents=3, stubborness=0.5, seed= None, test_name= ""):
     grid = MyCanvas(agent_portrayal, mappa.shape[1], mappa.shape[0], mappa.shape[1]*12, mappa.shape[0]*12)
     chart = ChartModule([{"Label": "Esplorate",
                         "Color": "Black"},
@@ -74,7 +74,7 @@ def visualize(mappa, num_agents=3, stubborness=0.5, seed= None):
 
     server = ModularServer(model.Robosim_model,
                         [grid, chart],
-                        "Robosim",
+                        "Robosim" + test_name,
                         {"num_agents": agent_slider,"simulation_map":mappa, "stubborness": stub_slider,"seed": seed})
     server.launch()
 if __name__ == '__main__':

@@ -8,7 +8,6 @@ Usage:
 
 tests =  {
     "primo" : {
-        "name" : "test 1",
         "seed" : 33456,
         "map" : "mappa_3.txt",
         "n_agents" : 3,
@@ -32,4 +31,4 @@ if __name__ == '__main__':
         mappa = model.load_map(t['map'])
         random.seed(t['seed'])
         np.random.seed(t['seed'])
-        visualization.visualize(mappa, t['n_agents'], t['stubborness'], seed = t['seed'])
+        visualization.visualize(mappa, t['n_agents'], t['stubborness'], seed = t['seed'], test_name=", test " + arguments['<test>'])
