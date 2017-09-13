@@ -34,7 +34,7 @@ class Robosim_agent(Agent):
             #best_direction = (best_direction[0], self.model.simulation_map.shape[0] - best_direction[1] - 1)
             best_direction = self.model.norm2mesa(best_direction)
             self.model.grid.move_agent(self, best_direction)
-    def step(self):
+    def step_astar(self):
         goal = self.find_goal()
         if goal == None:
             return

@@ -8,8 +8,9 @@ import numpy as np
 import random
 import astar
 from enum import Enum
+from types import MethodType
 class Robosim_model(Model):
-    def __init__(self, num_agents, simulation_map, stubborness, seed = None):
+    def __init__(self, num_agents, simulation_map, stubborness, seed = None, step_name = None):
         super().__init__()
         assert isinstance(simulation_map, np.ndarray)
         self.simulation_map = simulation_map
@@ -22,11 +23,13 @@ class Robosim_model(Model):
 
         height = self.height = self.simulation_map.shape[0]
         width = self.width = self.simulation_map.shape[1]
-
         self.explored_map = np.empty(self.simulation_map.shape, dtype=np.object)
         self.explored_map.fill(CellState.UNEXPLORED)
 
         self.grid = SingleGrid(width, height, False)
+        Robosim_agent.step = Robosim_agent.step_pesante if step_name == "pesante" else \
+                             Robosim_agent.step_astar if step_name == "astar" else \
+                             Robosim_agent.step_simple if step_name == "simple" else None
         for i in range(self.num_agents):
             a = Robosim_agent(i, self, self.stubborness)
             self.schedule.add(a)

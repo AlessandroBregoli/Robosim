@@ -11,7 +11,8 @@ tests =  {
         "seed" : 33456,
         "map" : "mappa_3.txt",
         "n_agents" : 3,
-        "stubborness": 0.5
+        "stubborness": 0.5,
+        "step_name": "simple"
     }
 }
 
@@ -31,4 +32,4 @@ if __name__ == '__main__':
         mappa = model.load_map(t['map'])
         random.seed(t['seed'])
         np.random.seed(t['seed'])
-        visualization.visualize(mappa, t['n_agents'], t['stubborness'], seed = t['seed'], test_name=", test " + arguments['<test>'])
+        visualization.visualize(mappa, t['n_agents'], t['stubborness'], seed = t['seed'], test_name=", test " + arguments['<test>'], step_name=t['step_name'])
