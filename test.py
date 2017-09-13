@@ -2,14 +2,14 @@
 
 Usage:
     test.py list 
-    test.py show <test> [<seed>]
+    test.py show <test> [<step_name>]
     test.py run <test> <iterations>
 """
 
 tests =  {
     "primo" : {
         "seed" : 33456,
-        "map" : "mappa_3.txt",
+        "map" : "mappa_empty.txt",
         "n_agents" : 3,
         "stubborness": 0.5,
         "step_name": "simple"
@@ -25,6 +25,8 @@ if __name__ == '__main__':
         sys.exit()
     if arguments['show']:
         t = tests[arguments['<test>']]
+        if arguments["<step_name>"]:
+            t["step_name"] = arguments["<step_name>"]
         import visualization
         import random
         import model
