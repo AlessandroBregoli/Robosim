@@ -1,5 +1,6 @@
 import model
 
+import draw
 mappa = model.load_map("mappa_3.txt")
 modello = model.Robosim_model(3, mappa, 0.5)
 print("Mappa da esplorare:")
@@ -12,6 +13,5 @@ while modello.running:
     print("Iterazione: " + str(i))
     if i%10 == 0:
         model.print_map(modello.explored_map)
+        draw.draw_map(modello,str(i)+".svg")
 print(modello.datacollector.get_model_vars_dataframe())
-import draw
-draw.draw_map(modello)

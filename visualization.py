@@ -17,7 +17,6 @@ def agent_portrayal(agent):
                  }
     return portrayal
 
-mappa = model.load_map("mappa_3.txt")
 class MyCanvas(CanvasGrid):
     def render(self, mod):
         agenti = super().render(mod)
@@ -63,16 +62,22 @@ class MyCanvas(CanvasGrid):
         agenti[0] = objs + agenti.get(0)
         return agenti
 
-grid = MyCanvas(agent_portrayal, mappa.shape[1], mappa.shape[0], mappa.shape[1]*12, mappa.shape[0]*12)
-chart = ChartModule([{"Label": "Esplorate",
-                      "Color": "Black"}],
-                    data_collector_name='datacollector')
+def visualize(mappa, num_agents=3, stubborness=0.5 ):
+    grid = MyCanvas(agent_portrayal, mappa.shape[1], mappa.shape[0], mappa.shape[1]*12, mappa.shape[0]*12)
+    chart = ChartModule([{"Label": "Esplorate",
+                        "Color": "Black"},
+                        {"Label": "Comunicazioni", "Color" : "Red"}],
+                        data_collector_name='datacollector')
 
-stub_slider = UserSettableParameter('slider', "Stubborness", 0.5, 0, 1, 0.05)
-agent_slider = UserSettableParameter('slider', "Number of agents", 3,1,50,1)
+    stub_slider = UserSettableParameter('slider', "Stubborness", stubborness, 0, 1, 0.05)
+    agent_slider = UserSettableParameter('slider', "Number of agents", num_agents,1,50,1)
 
-server = ModularServer(model.Robosim_model,
-                       [grid, chart],
-                       "Robosim",
-                       {"num_agents": agent_slider,"simulation_map":mappa, "stubborness": stub_slider})
-server.launch()
+    server = ModularServer(model.Robosim_model,
+                        [grid, chart],
+                        "Robosim",
+                        {"num_agents": agent_slider,"simulation_map":mappa, "stubborness": stub_slider})
+    server.launch()
+if __name__ == '__main__':
+    mappa = model.load_map("mappa_3.txt")
+    visualize(mappa)
+

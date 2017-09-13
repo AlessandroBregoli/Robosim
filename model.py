@@ -15,6 +15,7 @@ class Robosim_model(Model):
         self.num_agents = num_agents
         self.stubborness = stubborness
         self.schedule = RandomActivation(self)
+        self.communications = 1
 
         height = self.height = self.simulation_map.shape[0]
         width = self.width = self.simulation_map.shape[1]
@@ -36,9 +37,10 @@ class Robosim_model(Model):
         
         self.border_cell = []
         self.datacollector = DataCollector(
-            model_reporters={"Esplorate": conta_esplorate})
+            model_reporters={"Esplorate": self.conta_esplorate, "Comunicazioni": self.get_communications})
 
     def step(self):
+        self.communications = 0
         for agent in self.schedule.agents:
             self.look(agent)
         self.find_border_cell()
@@ -89,22 +91,26 @@ class Robosim_model(Model):
 
     #Dato un agente la funzione esplora la mappa nel suo raggio visivo
     def look(self, agent):
-         x_range, y_range = self.get_map_range(1, (agent.pos[0], self.simulation_map.shape[0] - agent.pos[1] - 1))
-         for x1 in x_range:
-             for y1 in y_range:
-                 self.explored_map[y1][x1] = self.simulation_map[y1][x1]
+        x_range, y_range = self.get_map_range(1, (agent.pos[0], self.simulation_map.shape[0] - agent.pos[1] - 1))
+        for x1 in x_range:
+            for y1 in y_range:
+                if self.explored_map[y1][x1] == CellState.UNEXPLORED:
+                    self.communications += 1
+                self.explored_map[y1][x1] = self.simulation_map[y1][x1]
     def norm2mesa(self, pos): 
         return (pos[0], (self.simulation_map.shape[0] - pos[1] - 1))
     def mesa2norm(self, pos):
         return self.norm2mesa(pos)
+    def get_communications(self, model):
+        return self.communications
+    def conta_esplorate(self, model): 
+        mappa = self.explored_map
+        return np.count_nonzero(mappa != CellState.UNEXPLORED)
 class CellState(Enum):
     UNEXPLORED = 0
     EMPTY = 1
     OBSTACLE = 2
 
-def conta_esplorate(model): 
-	mappa = model.explored_map
-	return np.count_nonzero(mappa != CellState.UNEXPLORED)
 def load_map(path):
     tmp_ret = []
     with open(path) as mappa:

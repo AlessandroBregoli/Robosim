@@ -7,10 +7,10 @@ cellpadding = 1
 celltot = cellsize+cellpadding
 fontsize = 12
 
-def draw_map(modello):
+def draw_map(modello,filename):
     explored_map = modello.explored_map
     h,w = explored_map.shape
-    svg = svgwrite.Drawing()
+    svg = svgwrite.Drawing(size=(w*celltot,h*celltot))
     bgrect = svg.rect((0,0), (w*celltot, h*celltot), fill="#eee")
     svg.add(bgrect)
     for (y,x), content in np.ndenumerate(explored_map):
@@ -27,4 +27,4 @@ def draw_map(modello):
             goal = ag.goal
             gtxt = svg.text(ag.unique_id, (goal[0] *celltot, goal[1]  * celltot + fontsize), fill="#00f", font_size= str(fontsize)+ "px")
             svg.add(gtxt)
-    svg.save()
+    svg.saveas(filename)
