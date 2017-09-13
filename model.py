@@ -98,6 +98,7 @@ class Robosim_model(Model):
 
     #Dato un agente la funzione esplora la mappa nel suo raggio visivo
     def look(self, agent):
+        self.communications += 1
         x_range, y_range = self.get_map_range(1, (agent.pos[0], self.simulation_map.shape[0] - agent.pos[1] - 1))
         for x1 in x_range:
             for y1 in y_range:

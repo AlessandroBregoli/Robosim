@@ -7,9 +7,44 @@ Usage:
 """
 
 tests =  {
-    "primo" : {
+    "me" : {
         "seed" : 33456,
         "map" : "mappa_empty.txt",
+        "n_agents" : 3,
+        "stubborness": 0.5,
+        "step_name": "simple"
+    },
+    "m1" : {
+        "seed" : 33456,
+        "map" : "mappa_1.txt",
+        "n_agents" : 3,
+        "stubborness": 0.5,
+        "step_name": "simple"
+    },
+    "m2" : {
+        "seed" : 33456,
+        "map" : "mappa_2.txt",
+        "n_agents" : 3,
+        "stubborness": 0.5,
+        "step_name": "simple"
+    },
+    "m3" : {
+        "seed" : 33456,
+        "map" : "mappa_3.txt",
+        "n_agents" : 3,
+        "stubborness": 0.5,
+        "step_name": "simple"
+    },
+    "mc" : {
+        "seed" : 33456,
+        "map" : "mappa_corridoio.txt",
+        "n_agents" : 3,
+        "stubborness": 0.5,
+        "step_name": "simple"
+    },
+    "mm" : {
+        "seed" : 33456,
+        "map" : "mappa_maze.txt",
         "n_agents" : 3,
         "stubborness": 0.5,
         "step_name": "simple"
