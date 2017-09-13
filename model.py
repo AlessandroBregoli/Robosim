@@ -1,5 +1,6 @@
 from mesa import Model
-from mesa.time import RandomActivation
+#from mesa.time import RandomActivation
+from mesa.time import BaseScheduler
 from agent import Robosim_agent
 from mesa.space import SingleGrid
 from mesa.datacollection import DataCollector
@@ -8,14 +9,16 @@ import random
 import astar
 from enum import Enum
 class Robosim_model(Model):
-    def __init__(self, num_agents, simulation_map, stubborness):
+    def __init__(self, num_agents, simulation_map, stubborness, seed = None):
         super().__init__()
         assert isinstance(simulation_map, np.ndarray)
         self.simulation_map = simulation_map
         self.num_agents = num_agents
         self.stubborness = stubborness
-        self.schedule = RandomActivation(self)
+        self.schedule = BaseScheduler(self)
         self.communications = 1
+        if seed is not None:
+            random.seed(seed)
 
         height = self.height = self.simulation_map.shape[0]
         width = self.width = self.simulation_map.shape[1]
@@ -31,6 +34,7 @@ class Robosim_model(Model):
             while not free_cell:
                 x = random.randrange(self.grid.width)
                 y = random.randrange(self.grid.height)
+                print(x,y)
                 if self.grid.is_cell_empty((x,self.simulation_map.shape[0] - y -1 )) and self.simulation_map[y][x] == CellState.EMPTY:
                     self.grid.place_agent(a, (x ,self.simulation_map.shape[0] - y -1))
                     free_cell = True

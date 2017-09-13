@@ -1,6 +1,6 @@
 import numpy as np
 import model
-
+import collections
 def dist(pos1, pos2):
     return ((pos1[0]-pos2[0])**2 + (pos1[1]-pos2[1])**2)**(1/2)
 class Node:
@@ -17,8 +17,8 @@ fScore: {}""".format(self.pos,
                      self.fScore)
 def find_path(explored_map, modello, start, goal, avoidCells):
     #trasformazione coordinate?
-    openSet = set()
-    closedSet = set()
+    openSet = collections.OrderedDict()
+    closedSet = collections.OrderedDict()
     cameFrom = {}
     #print(explored_map.shape, goal)
     nodes = np.empty(explored_map.shape, dtype=np.object)
@@ -30,7 +30,7 @@ def find_path(explored_map, modello, start, goal, avoidCells):
             continue
         n = Node(x[::-1])
         nodes[x] = n
-        openSet.add(n)
+        openSet[n] = None
     for x, node in np.ndenumerate(nodes):
         if node is not None:
             node.neighbors = nodes[x[0]-1:x[0]+2, x[1]-1:x[1]+2].flatten()
@@ -43,13 +43,13 @@ def find_path(explored_map, modello, start, goal, avoidCells):
         current = min(openSet, key=lambda x: x.fScore)
         if current == nodes[goal[::-1]]:
             return reconstruct_path(cameFrom, current)
-        openSet.remove(current)
-        closedSet.add(current)
+        openSet.pop(current)
+        closedSet[current] = None
         for x in current.neighbors: 
             if x in closedSet or x is None:
                 continue
             
-            openSet.add(x) #potrebbe già essere presente ma tanto è un set
+            openSet[x] = None #potrebbe già essere presente ma tanto è un set
             tentative_gScore = current.gScore + dist(current.pos, x.pos)
             if tentative_gScore >= x.gScore:
                 continue

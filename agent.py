@@ -10,10 +10,9 @@ class Robosim_agent(Agent):
         self.smelly_cells = []
         self.agent_stubborness = agent_stubborness
         self.goal = None
-    def step(self):
+    def step_simple(self):
         goal = self.find_goal()
         self.old_goal = self.goal = goal
-        print(goal)
         best_direction = None
         best_distance = 99999
         normpos = self.model.mesa2norm(self.pos)
@@ -35,7 +34,7 @@ class Robosim_agent(Agent):
             #best_direction = (best_direction[0], self.model.simulation_map.shape[0] - best_direction[1] - 1)
             best_direction = self.model.norm2mesa(best_direction)
             self.model.grid.move_agent(self, best_direction)
-    def step_astar(self):
+    def step(self):
         goal = self.find_goal()
         if goal == None:
             return

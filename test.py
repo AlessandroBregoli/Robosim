@@ -28,6 +28,8 @@ if __name__ == '__main__':
         import visualization
         import random
         import model
+        import numpy as np
         mappa = model.load_map(t['map'])
         random.seed(t['seed'])
-        visualization.visualize(mappa, t['n_agents'], t['stubborness'])
+        np.random.seed(t['seed'])
+        visualization.visualize(mappa, t['n_agents'], t['stubborness'], seed = t['seed'])
