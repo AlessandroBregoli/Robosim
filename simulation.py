@@ -13,3 +13,5 @@ while modello.running:
     if i%10 == 0:
         model.print_map(modello.explored_map)
 print(modello.datacollector.get_model_vars_dataframe())
+import draw
+draw.draw_map(modello)
