@@ -1,7 +1,6 @@
 from mesa import Agent
 import model
 import astar
-import sys
 
 class Robosim_agent(Agent):
     def __init__(self, unique_id, model, agent_stubborness = 0.75):
@@ -11,29 +10,32 @@ class Robosim_agent(Agent):
         self.smelly_cells = []
         self.agent_stubborness = agent_stubborness
         self.goal = None
-    def step_simple(self):
+    def step(self):
         goal = self.find_goal()
-        self.old_goal = goal
+        self.old_goal = self.goal = goal
         print(goal)
         best_direction = None
         best_distance = 99999
-        x_range, y_range = self.model.get_map_range(1,(self.pos[0], self.model.simulation_map.shape[0] - self.pos[1] - 1))
+        normpos = self.model.mesa2norm(self.pos)
+        x_range, y_range = self.model.get_map_range(1, normpos)
         for x in x_range:
             for y in y_range:
-                if x == self.pos[0] and y == self.model.simulation_map.shape[0] - self.pos[1] - 1:
+                if (x,y) == normpos:
                     continue
                 if (x,y) in self.smelly_cells:
                     continue
-                if self.model.grid.is_cell_empty((x,self.model.simulation_map.shape[0] - y - 1)) and self.model.simulation_map[y][x] != model.CellState.OBSTACLE:
+                mesaxy = self.model.norm2mesa((x,y))
+                if self.model.grid.is_cell_empty(mesaxy) and self.model.simulation_map[y][x] != model.CellState.OBSTACLE:
                     distance = self.geometric_distance((x,y), goal)
                     if distance < best_distance:
                         best_distance = distance
                         best_direction = (x,y)
         if best_direction != None:
             self.smelly_cells.append(best_direction)
-            best_direction = (best_direction[0], self.model.simulation_map.shape[0] - best_direction[1] - 1)
+            #best_direction = (best_direction[0], self.model.simulation_map.shape[0] - best_direction[1] - 1)
+            best_direction = self.model.norm2mesa(best_direction)
             self.model.grid.move_agent(self, best_direction)
-    def step(self):
+    def step_astar(self):
         goal = self.find_goal()
         if goal == None:
             return
@@ -81,14 +83,16 @@ class Robosim_agent(Agent):
             path = self.modded_dijkstra(goal)
         #print(path)
         is_cell_empty = False
+        normpos = self.model.mesa2norm(self.pos)
         while not is_cell_empty:
             is_cell_empty = True
             direction = goal
         
-            while path[direction] != (self.pos[0], self.model.simulation_map.shape[0] - self.pos[1] - 1):
+            while path[direction] != normpos:
                 #print(direction)
                 direction = path[direction]
-            direction = (direction[0], self.model.simulation_map.shape[0] - direction[1] - 1)
+            #direction = (direction[0], self.model.simulation_map.shape[0] - direction[1] - 1)
+            direction = self.model.mesa2norm(direction)
             if not self.model.grid.is_cell_empty(direction):
                 path = self.modded_dijkstra(goal)
                 is_cell_empty = False
@@ -100,12 +104,14 @@ class Robosim_agent(Agent):
         best_goal = None
         best_score = 0
         recalculated_old_goal_score = float("inf")
+        normpos = self.model.mesa2norm(self.pos)
         for x,y in self.model.border_cell:
-            score = self.geometric_distance((x,y), (self.pos[0], self.model.simulation_map.shape[0] - self.pos[1] - 1))**2
+            score = self.geometric_distance((x,y), normpos)**2
             for agent in self.model.schedule.agents:
                 if agent.unique_id == self.unique_id:
                     continue
-                score -= self.geometric_distance((x,y), (agent.pos[0], self.model.simulation_map.shape[0] - agent.pos[1] - 1)) **2
+                agentnormpos = self.model.mesa2norm(agent.pos)
+                score -= self.geometric_distance((x,y), agentnormpos) **2
             if score < best_score or best_goal == None:
                 best_score = score
                 best_goal = (x,y)
@@ -128,7 +134,8 @@ class Robosim_agent(Agent):
                 v_set.append((x,y))
         
         #v_set.append(self.pos)
-        dist[(self.pos[0], self.model.simulation_map.shape[0] - self.pos[1] - 1)] = 0
+        normpos = self.model.mesa2norm(self.pos)
+        dist[normpos] = 0
         while len(v_set) != 0:
             u = min(dist, key=lambda k: dist[k] if k in v_set else float("inf"))
             if dist[u] == float("inf"):
@@ -141,7 +148,8 @@ class Robosim_agent(Agent):
                     alt = dist[u] + 1
                     if (x,y) == u:
                         continue
-                    if (not(self.model.grid.is_cell_empty((x,self.model.simulation_map.shape[0] - y - 1))) and alt == 1) or self.model.simulation_map[y][x] == model.CellState.OBSTACLE:
+                    mesaxy = self.model.norm2mesa((x,y))
+                    if (not(self.model.grid.is_cell_empty(mesaxy)) and alt == 1) or self.model.simulation_map[y][x] == model.CellState.OBSTACLE:
                         continue
                     
                     if alt < dist[(x,y)]:
