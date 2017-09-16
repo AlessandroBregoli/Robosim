@@ -8,6 +8,8 @@ Usage:
 """
 import draw
 import model
+import matplotlib.pyplot as plt
+
 
 tests =  {
     "me" : {
@@ -83,12 +85,19 @@ if __name__ == '__main__':
         mappa = model.load_map(t['map'])
         random.seed(t['seed'])
         np.random.seed(t['seed'])
-        modello = model.Robosim_model(3, mappa, 0.5)
+        modello = model.Robosim_model(3, mappa, 0.5, seed=t["seed"], step_name=t["step_name"])
         modello.running = True
         i = 0
         while modello.running:
             i += 1
             modello.step()
+        plt.plot(modello.datacollector.model_vars["Esplorate"])
+        plt.title("Celle Esplorate")
+        plt.savefig("Esplorate_" + arguments["<test>"] + "_" + t["step_name"] + ".svg")
+        plt.close()
+        plt.plot(modello.datacollector.model_vars["Comunicazioni"])
+        plt.title("Comunicazioni")
+        plt.savefig("Comunicazioni_" + arguments["<test>"] + ".svg")
     if arguments['export_map']:
           t = tests[arguments['<test>']]
           mappa = model.load_map(t['map'])
