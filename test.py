@@ -14,6 +14,7 @@ import random
 import model
 import numpy as np
 from docopt import docopt
+import sys
 
 tests =  {
     "me" : {
@@ -61,7 +62,7 @@ tests =  {
 }
 
 
-import sys
+
 if __name__ == '__main__':
     arguments = docopt(__doc__, version='Robosim Test')
     if arguments['list']:
