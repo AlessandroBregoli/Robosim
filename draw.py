@@ -28,3 +28,17 @@ def draw_map(modello,filename):
             gtxt = svg.text(ag.unique_id, (goal[0] *celltot, goal[1]  * celltot + fontsize), fill="#00f", font_size= str(fontsize)+ "px")
             svg.add(gtxt)
     svg.saveas(filename)
+
+def draw_true_map(mappa, filename):
+    explored_map = mappa
+    h,w = explored_map.shape
+    svg = svgwrite.Drawing(size=(w*celltot,h*celltot))
+    bgrect = svg.rect((0,0), (w*celltot, h*celltot), fill="#eee")
+    svg.add(bgrect)
+    for (y,x), content in np.ndenumerate(explored_map):
+        bg = "#ddd" if content == model.CellState.UNEXPLORED else  \
+             "#555" if content == model.CellState.OBSTACLE else \
+             "#fff"
+        cell = svg.rect((celltot*x,celltot*y),(cellsize,cellsize),fill=bg)
+        svg.add(cell)
+    svg.saveas(filename)
