@@ -6,7 +6,7 @@ from mesa.visualization.UserParam import UserSettableParameter
 import model
 import numpy as np
 import collections
-
+import draw
 def agent_portrayal(agent):
     portrayal = {"Shape": "circle",
                  "Color": "red",
@@ -69,12 +69,14 @@ def visualize(mappa, num_agents=3, stubborness=0.5, seed= None, test_name= "", s
                         data_collector_name='datacollector')
     chart_cm = ChartModule([{"Label": "Comunicazioni", "Color" : "Red"}],
                         data_collector_name='datacollector')
+    chart_um = draw.Dict_chart([{"Label": "Mosse utili", "Color" : "Red"}],
+                       data_collector_name='datacollector')
 
     stub_slider = UserSettableParameter('slider', "Stubborness", stubborness, 0, 1, 0.05)
     agent_slider = UserSettableParameter('slider', "Number of agents", num_agents,1,50,1)
 
     server = ModularServer(model.Robosim_model,
-                        [grid, chart, chart_cm],
+                        [grid, chart, chart_cm,chart_um],
                         "Robosim" + test_name,
                         {"num_agents": agent_slider,"simulation_map":mappa, "stubborness": stub_slider,"seed": seed,"step_name": step_name})
     server.launch()

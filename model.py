@@ -18,6 +18,7 @@ class Robosim_model(Model):
         self.stubborness = stubborness
         self.schedule = BaseScheduler(self)
         self.communications = 1
+        self.usefull_moves = []
         if seed is not None:
             random.seed(seed)
 
@@ -44,10 +45,11 @@ class Robosim_model(Model):
         
         self.border_cell = []
         self.datacollector = DataCollector(
-            model_reporters={"Esplorate": self.conta_esplorate, "Comunicazioni": self.get_communications})
+            model_reporters={"Esplorate": self.conta_esplorate, "Comunicazioni": self.get_communications, "Mosse utili":self.get_usefull_moves})
 
     def step(self):
         self.communications = 0
+        self.usefull_moves = [0 for x in range(10)]
         for agent in self.schedule.agents:
             self.look(agent)
         self.find_border_cell()
@@ -98,13 +100,17 @@ class Robosim_model(Model):
 
     #Dato un agente la funzione esplora la mappa nel suo raggio visivo
     def look(self, agent):
+        explored_cells = 0
         self.communications += 1
         x_range, y_range = self.get_map_range(1, (agent.pos[0], self.simulation_map.shape[0] - agent.pos[1] - 1))
         for x1 in x_range:
             for y1 in y_range:
                 if self.explored_map[y1][x1] == CellState.UNEXPLORED:
                     self.communications += 1
+                    explored_cells += 1
                 self.explored_map[y1][x1] = self.simulation_map[y1][x1]
+        
+        self.usefull_moves[explored_cells] += 1
     def norm2mesa(self, pos): 
         return (pos[0], (self.simulation_map.shape[0] - pos[1] - 1))
     def mesa2norm(self, pos):
@@ -114,6 +120,8 @@ class Robosim_model(Model):
     def conta_esplorate(self, model): 
         mappa = self.explored_map
         return np.count_nonzero(mappa != CellState.UNEXPLORED)
+    def get_usefull_moves(self, model):
+        return self.usefull_moves
 class CellState(Enum):
     UNEXPLORED = 0
     EMPTY = 1
