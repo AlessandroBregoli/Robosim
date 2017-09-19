@@ -96,12 +96,12 @@ if __name__ == '__main__':
         plt.close()
         plt.plot(modello.datacollector.model_vars["Comunicazioni"])
         plt.title("Comunicazioni")
-        plt.savefig("Comunicazioni_" + arguments["<test>"] + t["step_name"+ ".svg")
+        plt.savefig("Comunicazioni_" + arguments["<test>"] + t["step_name"]+ ".svg")
         plt.close()
         plt.plot(modello.datacollector.model_vars["Mosse utili"])
         plt.title("Mosse utili")
         plt.legend([x for x in range(10)], ncol=2)
-        plt.savefig("Mosse_utili_" + arguments["<test>"] + t["step_name" + ".svg")
+        plt.savefig("Mosse_utili_" + arguments["<test>"] + t["step_name"] + ".svg")
         plt.close()
     if arguments['export_map']:
           t = tests[arguments['<test>']]
