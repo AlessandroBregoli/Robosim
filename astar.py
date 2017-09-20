@@ -26,7 +26,7 @@ def find_path(explored_map, modello, start, goal, avoidCells):
         if cellContent == model.CellState.OBSTACLE:
             continue
         if x[::-1] in avoidCells:
-            print("avoid", x[::-1])
+            #print("avoid", x[::-1])
             continue
         n = Node(x[::-1])
         nodes[x] = n

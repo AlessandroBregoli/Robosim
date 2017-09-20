@@ -69,8 +69,8 @@ class Robosim_agent(Agent):
                 if direction == goal:
                     goal = self.find_goal()
                 avoidCells += direction
-                print("occupata cella", direction)
-                print("path", path, direction)
+                #print("occupata cella", direction)
+                #print("path", path, direction)
                 path = None
                 ricalcolo += 1
                 if ricalcolo < 4:
