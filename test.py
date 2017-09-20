@@ -104,7 +104,8 @@ if __name__ == '__main__':
     if arguments['runall']:
         mappa = model.load_map(t['map'])
         tempi = {}
-        for n in range(int(arguments['<max_n>'])):
+        tempipern = {}
+        for n in range(1,int(arguments['<max_n>'])+1):
             n_step = 0
             for giro in range(int(arguments['<giri>'])):
                 modello = model.Robosim_model(n, mappa, 0.5, seed=None, step_name=t["step_name"])
@@ -115,7 +116,16 @@ if __name__ == '__main__':
                     modello.step()
                 n_step += i
             tempi[n] = n_step/int(arguments['<giri>'])
-        print(tempi)
+            tempipern[n] = tempi[n] * n
+        plt.plot(list(tempi.keys()), list(tempi.values()))
+        plt.title("Tempi al variare di n")
+        plt.savefig("runall_tempi_" + arguments["<test>"] + "_" + t["step_name"] + ".svg")
+        plt.close()
+        plt.plot(list(tempipern.keys()), list(tempipern.values()))
+        plt.title("Tempi * n al variare di n")
+        plt.savefig("runall_tempipern_" + arguments["<test>"] + "_" + t["step_name"] + ".svg")
+        plt.close()
+
     if arguments['export_map']:
         mappa = model.load_map(t['map'])
         draw.draw_true_map(mappa, t['map'] + ".svg")
