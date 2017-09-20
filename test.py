@@ -2,7 +2,7 @@
 
 Usage:
     test.py list 
-    test.py show <test> [<step_name>]
+    test.py show <test> [<step_name>] [<seed>]
     test.py run <test> [<step_name>]
     test.py runall <test> <max_n> <giri> [<step_name>]
     test.py export_map <test>
@@ -71,14 +71,17 @@ if __name__ == '__main__':
     t = tests[arguments['<test>']]
     if arguments["<step_name>"]:
         t["step_name"] = arguments["<step_name>"]
-        print("ciao")
+    if arguments["<seed>"]:
+        t["seed"] = arguments["<seed>"]
+        if arguments["<seed>"] == "no":
+            t["seed"] = None
     if arguments['list']:
         print(tests.keys())
         sys.exit()
     if arguments['show']:
         mappa = model.load_map(t['map'])
         random.seed(t['seed'])
-        np.random.seed(t['seed'])
+        #np.random.seed(t['seed'])
         visualization.visualize(mappa, t['n_agents'], t['stubborness'], seed = t['seed'], test_name=", test " + arguments['<test>'], step_name=t['step_name'])
     if arguments['run']:
         mappa = model.load_map(t['map'])
