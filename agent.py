@@ -33,7 +33,7 @@ class Robosim_agent(Agent):
                             best_distance = distance
                             best_direction = (x,y)
             if best_direction == None and goal != None and len(self.smelly_cells) != 0:
-                print(self.unique_id)
+                #print(self.unique_id)
                 self.old_goal = None
                 goal = self.find_goal()
                 self.old_goal = self.goal = goal
