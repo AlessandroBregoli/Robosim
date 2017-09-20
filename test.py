@@ -111,6 +111,7 @@ if __name__ == '__main__':
             n_step = 0
             print("n = " + str(n))
             for giro in range(int(arguments['<giri>'])):
+                print("\tgiro = " + str(giro))
                 modello = model.Robosim_model(n, mappa, 0.5, seed=None, step_name=t["step_name"])
                 modello.running = True
                 i = 0
