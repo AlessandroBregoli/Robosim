@@ -2,7 +2,7 @@
 
 Usage:
     test.py list 
-    test.py show <test> [<step_name>] [<seed>]
+    test.py show <test> [--step=<step_name>] [<seed>]
     test.py run <test> [<step_name>]
     test.py runall <test> <max_n> <giri> [--step=<step_name>] [--stubb=<stubborness>]
     test.py export_map <test>

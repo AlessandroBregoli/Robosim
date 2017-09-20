@@ -76,7 +76,8 @@ def visualize(mappa, num_agents=3, stubborness=0.5, seed= None, test_name= "", s
     agent_slider = UserSettableParameter('slider', "Number of agents", num_agents,1,50,1)
 
     server = ModularServer(model.Robosim_model,
-                        [grid, chart, chart_cm,chart_um],
+                        [grid, #chart, chart_cm,chart_um
+                        ],
                         "Robosim" + test_name,
                         {"num_agents": agent_slider,"simulation_map":mappa, "stubborness": stub_slider,"seed": seed,"step_name": step_name})
     server.launch()
