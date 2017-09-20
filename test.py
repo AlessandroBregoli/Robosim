@@ -59,7 +59,7 @@ tests =  {
         "seed" : 33456,
         "map" : "mappa_maze.txt",
         "n_agents" : 3,
-        "stubborness": 0.5,
+        "stubborness": 0.2,
         "step_name": "simple"
     }
 }
