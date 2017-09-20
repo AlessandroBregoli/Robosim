@@ -3,59 +3,46 @@ import model
 import collections
 def dist(pos1, pos2):
     return ((pos1[0]-pos2[0])**2 + (pos1[1]-pos2[1])**2)**(1/2)
-class Node:
-    def __init__(self, pos):
-        self.neighbors = []
-        self.gScore = float('inf')
-        self.fScore = float('inf')
-        self.pos = pos
-    def __str__(self):
-        return """pos: {},
-gScore: {},
-fScore: {}""".format(self.pos,
-                     self.gScore,
-                     self.fScore)
+
 def find_path(explored_map, modello, start, goal, avoidCells):
     #trasformazione coordinate?
     openSet = collections.OrderedDict()
     closedSet = collections.OrderedDict()
     cameFrom = {}
+    fScore = {}
+    gScore = {}
     #print(explored_map.shape, goal)
-    nodes = np.empty(explored_map.shape, dtype=np.object)
     for x, cellContent in np.ndenumerate(explored_map):
-        if cellContent == model.CellState.OBSTACLE:
-            continue
-        if x[::-1] in avoidCells:
-            #print("avoid", x[::-1])
-            continue
-        n = Node(x[::-1])
-        nodes[x] = n
+        if cellContent == model.CellState.OBSTACLE or x[::-1] in avoidCells:
+            avoidCells += [x[::-1]]
+        n = x[::-1]
         openSet[n] = None
-    for x, node in np.ndenumerate(nodes):
-        if node is not None:
-            node.neighbors = nodes[x[0]-1:x[0]+2, x[1]-1:x[1]+2].flatten()
-    try:
-        nodes[start[::-1]].gScore = 0
-    except:
-        print(avoidCells, start)
-    nodes[start[::-1]].fScore = estimate(start,goal)
+        fScore[n] = float('inf')
+        gScore[n] = float('inf')
+    gScore[start] = 0
+    fScore[start] = estimate(start,goal)
+    print(avoidCells)
     while len(openSet) > 0:
-        current = min(openSet, key=lambda x: x.fScore)
-        if current == nodes[goal[::-1]]:
+        current = min(openSet, key=lambda x: fScore[x])
+        if current == goal:
             return reconstruct_path(cameFrom, current)
+        #print(len(openSet))
         openSet.pop(current)
+        #print(len(openSet))
         closedSet[current] = None
-        for x in current.neighbors: 
-            if x in closedSet or x is None:
+        xrange, yrange =  modello.get_map_range(1, current)
+        neighbors = [(x,y) for x in xrange for y in yrange]
+        for x in neighbors: 
+            if x in closedSet or x is None or x in avoidCells or x == current:
                 continue
             
             openSet[x] = None #potrebbe già essere presente ma tanto è un set
-            tentative_gScore = current.gScore + dist(current.pos, x.pos)
-            if tentative_gScore >= x.gScore:
+            tentative_gScore = gScore[ current] + dist(current, x)
+            if tentative_gScore >= gScore[x]:
                 continue
             cameFrom[x] = current
-            x.gScore = tentative_gScore
-            x.fScore = x.gScore + estimate (x.pos, goal)
+            gScore[x] = tentative_gScore
+            fScore[x] = gScore[x] + estimate (x, goal)
     return None
 
 
@@ -63,10 +50,10 @@ def estimate(start,goal):
     return dist(start, goal)
     
 def reconstruct_path(cameFrom,current):
-    total_path = [current.pos]
+    total_path = [current]
     while current in cameFrom:
         current = cameFrom[current]
-        total_path.append(current.pos)
+        total_path.append(current)
     return total_path
 #test
 #import model

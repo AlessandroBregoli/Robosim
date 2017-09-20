@@ -69,7 +69,7 @@ class Robosim_agent(Agent):
             if not self.model.grid.is_cell_empty(mesadirection) or self.model.simulation_map[direction[::-1]] == model.CellState.OBSTACLE:
                 if direction == goal:
                     goal = self.find_goal()
-                avoidCells += direction
+                avoidCells += [direction]
                 #print("occupata cella", direction)
                 #print("path", path, direction)
                 path = None
