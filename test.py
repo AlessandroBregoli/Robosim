@@ -4,6 +4,7 @@ Usage:
     test.py list 
     test.py show <test> [<step_name>]
     test.py run <test> [<step_name>]
+    test.py runall <test> <max_n> <giri> [<step_name>]
     test.py export_map <test>
 """
 import draw
@@ -65,22 +66,19 @@ tests =  {
 
 if __name__ == '__main__':
     arguments = docopt(__doc__, version='Robosim Test')
+    t = tests[arguments['<test>']]
+    if arguments["<step_name>"]:
+        t["step_name"] = arguments["<step_name>"]
+        print("ciao")
     if arguments['list']:
         print(tests.keys())
         sys.exit()
     if arguments['show']:
-        t = tests[arguments['<test>']]
-        if arguments["<step_name>"]:
-            t["step_name"] = arguments["<step_name>"]
         mappa = model.load_map(t['map'])
         random.seed(t['seed'])
         np.random.seed(t['seed'])
         visualization.visualize(mappa, t['n_agents'], t['stubborness'], seed = t['seed'], test_name=", test " + arguments['<test>'], step_name=t['step_name'])
     if arguments['run']:
-        t = tests[arguments['<test>']]
-        if arguments["<step_name>"]:
-            t["step_name"] = arguments["<step_name>"]
-
         mappa = model.load_map(t['map'])
         random.seed(t['seed'])
         np.random.seed(t['seed'])
@@ -103,8 +101,22 @@ if __name__ == '__main__':
         plt.legend([x for x in range(10)], ncol=2)
         plt.savefig("Mosse_utili_" + arguments["<test>"] + t["step_name"] + ".svg")
         plt.close()
+    if arguments['runall']:
+        mappa = model.load_map(t['map'])
+        tempi = {}
+        for n in range(int(arguments['<max_n>'])):
+            n_step = 0
+            for giro in range(int(arguments['<giri>'])):
+                modello = model.Robosim_model(n, mappa, 0.5, seed=None, step_name=t["step_name"])
+                modello.running = True
+                i = 0
+                while modello.running:
+                    i += 1
+                    modello.step()
+                n_step += i
+            tempi[n] = n_step/int(arguments['<giri>'])
+        print(tempi)
     if arguments['export_map']:
-          t = tests[arguments['<test>']]
-          mappa = model.load_map(t['map'])
-          draw.draw_true_map(mappa, t['map'] + ".svg")
+        mappa = model.load_map(t['map'])
+        draw.draw_true_map(mappa, t['map'] + ".svg")
           

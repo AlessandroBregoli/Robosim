@@ -38,7 +38,6 @@ class Robosim_model(Model):
             while not free_cell:
                 x = random.randrange(self.grid.width)
                 y = random.randrange(self.grid.height)
-                print(x,y)
                 if self.grid.is_cell_empty((x,self.simulation_map.shape[0] - y -1 )) and self.simulation_map[y][x] == CellState.EMPTY:
                     self.grid.place_agent(a, (x ,self.simulation_map.shape[0] - y -1))
                     free_cell = True
