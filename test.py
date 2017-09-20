@@ -9,6 +9,8 @@ Usage:
 """
 import draw
 import model
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import visualization
 import random
