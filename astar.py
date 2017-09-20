@@ -4,10 +4,10 @@ import collections
 def dist(pos1, pos2):
     return ((pos1[0]-pos2[0])**2 + (pos1[1]-pos2[1])**2)**(1/2)
 class Node:
-    gScore = float('inf')
-    fScore = float('inf')
-    neighbors = []
     def __init__(self, pos):
+        self.neighbors = []
+        self.gScore = float('inf')
+        self.fScore = float('inf')
         self.pos = pos
     def __str__(self):
         return """pos: {},
