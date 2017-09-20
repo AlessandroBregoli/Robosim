@@ -42,7 +42,9 @@ def find_path(explored_map, modello, start, goal, avoidCells):
     while len(openSet) > 0:
         current = min(openSet, key=lambda x: x.fScore)
         if current == nodes[goal[::-1]]:
-            return reconstruct_path(cameFrom, current)
+            ret_path = reconstruct_path(cameFrom, current)
+            free_nodes(nodes)
+            return ret_path
         openSet.pop(current)
         closedSet[current] = None
         for x in current.neighbors: 
@@ -56,8 +58,15 @@ def find_path(explored_map, modello, start, goal, avoidCells):
             cameFrom[x] = current
             x.gScore = tentative_gScore
             x.fScore = x.gScore + estimate (x.pos, goal)
+    free_nodes(nodes)
     return None
 
+def free_nodes(nodes):
+    for x,node in np.ndenumerate(nodes):
+        if node:
+            node.neighbors = None
+            nodes[x] = None
+    del nodes
 
 def estimate(start,goal):
     return dist(start, goal)

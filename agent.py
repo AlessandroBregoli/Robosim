@@ -56,7 +56,7 @@ class Robosim_agent(Agent):
         ricalcolo = 0
         while True:
             if goal != self.old_goal or path is None:
-                print("calcolo path")
+                #print("calcolo path")
                 path = astar.find_path(self.model.explored_map, self.model,
                                        normpos, goal, avoidCells)
                 if path is None:
