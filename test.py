@@ -123,10 +123,10 @@ if __name__ == '__main__':
                     modello.step()
                 n_step += i
             tempi[n] = n_step/int(arguments['<giri>'])
-            tempipern[n] = tempi[n] * n
+            tempipern[n] = tempi[n] * (n**0.5)
         plt.plot(list(tempi.keys()), list(tempi.values()))
         plt.plot(list(tempipern.keys()), list(tempipern.values()))
-        plt.legend(["tempi", "tempi * n"])
+        plt.legend(["tempi", "tempi * sqrt(n)"])
         plt.title("Tempi al variare di n")
         plt.savefig("runall_" + arguments["<test>"] + "_" + t["step_name"] + ".svg")
         plt.close()
