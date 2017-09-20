@@ -21,7 +21,6 @@ def find_path(explored_map, modello, start, goal, avoidCells):
         gScore[n] = float('inf')
     gScore[start] = 0
     fScore[start] = estimate(start,goal)
-    print(avoidCells)
     while len(openSet) > 0:
         current = min(openSet, key=lambda x: fScore[x])
         if current == goal:

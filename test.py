@@ -88,7 +88,7 @@ if __name__ == '__main__':
         mappa = model.load_map(t['map'])
         random.seed(t['seed'])
         np.random.seed(t['seed'])
-        modello = model.Robosim_model(3, mappa, 0.5, seed=t["seed"], step_name=t["step_name"])
+        modello = model.Robosim_model(3, mappa, t['stubborness'], seed=t["seed"], step_name=t["step_name"])
         modello.running = True
         i = 0
         while modello.running:
