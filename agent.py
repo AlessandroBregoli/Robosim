@@ -34,6 +34,19 @@ class Robosim_agent(Agent):
                             best_direction = (x,y)
             if best_direction == None and goal != None and len(self.smelly_cells) != 0:
                 #print(self.unique_id)
+                cleaned = False
+                for cella in self.smelly_cells[1::-1]:
+                    x_range, y_range = self.model.get_map_range(1, cella)
+                    for x in x_range:
+                        for y in y_range:
+                            if (x,y) not in self.smelly_cells and self.model.explored_map[y][x] != model.CellState.OBSTACLE:
+                                cleaned = True
+                    if cleaned:
+                        self.smelly_cells.remove(cella)
+                        break
+                if cleaned:
+                    continue
+
                 self.old_goal = None
                 goal = self.find_goal()
                 self.old_goal = self.goal = goal
