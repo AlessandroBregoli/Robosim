@@ -4,7 +4,7 @@ Usage:
     test.py list 
     test.py show <test> [<step_name>] [<seed>]
     test.py run <test> [<step_name>]
-    test.py runall <test> <max_n> <giri> [<step_name>]
+    test.py runall <test> <max_n> <giri> [--step=<step_name>] [--stubb=<stubborness>]
     test.py export_map <test>
 """
 import draw
@@ -65,12 +65,13 @@ tests =  {
 }
 
 
-
 if __name__ == '__main__':
     arguments = docopt(__doc__, version='Robosim Test')
     t = tests[arguments['<test>']]
-    if arguments["<step_name>"]:
-        t["step_name"] = arguments["<step_name>"]
+    if arguments["--step"]:
+        t["step_name"] = arguments["--step"]
+    if arguments["--stubb"]:
+        t["stubborness"] = float(arguments["--stubb"])
     if arguments["<seed>"]:
         t["seed"] = arguments["<seed>"]
         if arguments["<seed>"] == "no":
