@@ -77,7 +77,7 @@ def modded_dijkstra(mappa,center):
     dist[center] = 0
     while len(v_set) != 0:
         u = min(dist, key=lambda k: dist[k] if k in v_set else float("inf"))
-        if dist[u] == float("inf"):
+        if dist[u] == float("inf") or u not in v_set:
             #print(u)
             #print(dist)
             #print(v_set)
