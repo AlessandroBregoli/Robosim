@@ -6,6 +6,7 @@ Usage:
     test.py run <test> [<step_name>]
     test.py runall <test> <max_n> <giri> [--step=<step_name>] [--stubb=<stubborness>]
     test.py export_map <test>
+    test.py map_cpl <test> [--nc=<nc>]
 """
 import draw
 import model
@@ -64,6 +65,47 @@ tests =  {
     }
 }
 
+def modded_dijkstra(mappa,center):
+    dist = {}
+    v_set = []
+    for x in range(mappa.shape[1]):
+        for y in range(mappa.shape[0]):
+            dist[(x,y)] = float("inf")
+            v_set.append((x,y))
+    
+    #v_set.append(self.pos)
+    dist[center] = 0
+    while len(v_set) != 0:
+        u = min(dist, key=lambda k: dist[k] if k in v_set else float("inf"))
+        if dist[u] == float("inf"):
+            #print(u)
+            #print(dist)
+            #print(v_set)
+            return dist
+        #print(u, dist[u])
+        v_set.remove(u)
+        y_max, x_max = mappa.shape
+        x,y = u
+        x_l = x - 1 if x - 1 > 0 else 0
+        x_u = x + 1 if x + 1 < x_max else x_max - 1 
+        y_l = y - 1 if y - 1 > 0 else 0
+        y_u = y + 1 if y + 1 < y_max else y_max - 1 
+
+        for (y,x), ele in np.ndenumerate(mappa[y_l:y_u+1,x_l:x_u+1]):
+            y += y_l
+            x += x_l
+            #print(str(u) + "=>" + str((x,y)))
+            alt = dist[u] + 1
+            if (x,y) == u:
+                continue
+            if ele == model.CellState.OBSTACLE:
+                continue
+            
+            if alt < dist[(x,y)]:
+                    dist[(x,y)] = alt
+        #if u == goal:
+        #    return path
+    return dist
 
 if __name__ == '__main__':
     arguments = docopt(__doc__, version='Robosim Test')
@@ -138,4 +180,26 @@ if __name__ == '__main__':
     if arguments['export_map']:
         mappa = model.load_map(t['map'])
         draw.draw_true_map(mappa, t['map'] + ".svg")
-          
+    if arguments['map_cpl']:
+        mappa = model.load_map(t['map'])
+        empty_cells = np.where(mappa==model.CellState.EMPTY)
+        #print(empty_cells)
+        if arguments['--nc']:
+            iterations = int(arguments['--nc'])
+        else:
+            iterations = len(empty_cells[0])
+        index_array = [x for x in range(len(empty_cells[0]))]
+        random.shuffle(index_array)
+        ret_value = 0
+        for x in index_array[:iterations]:
+            x_pos = (empty_cells[1][x],empty_cells[0][x])
+            dijk_dict = modded_dijkstra(mappa, x_pos)
+            tmp = 0
+            for key in index_array:
+                target = (empty_cells[1][key],empty_cells[0][key])
+                if target == x_pos:
+                    continue
+                tmp += dijk_dict[target] / max(abs(target[0] - x_pos[0]), abs(target[1] - x_pos[1]))
+            ret_value += tmp /len(index_array)
+        ret_value /= iterations
+        print(ret_value)
