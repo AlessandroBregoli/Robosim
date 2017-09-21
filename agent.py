@@ -35,7 +35,7 @@ class Robosim_agent(Agent):
             if best_direction == None and goal != None and len(self.smelly_cells) != 0:
                 #print(self.unique_id)
                 cleaned = False
-                for cella in self.smelly_cells[1::-1]:
+                for cella in self.smelly_cells[1:-1]:
                     x_range, y_range = self.model.get_map_range(1, cella)
                     for x in x_range:
                         for y in y_range:
