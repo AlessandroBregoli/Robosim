@@ -1,8 +1,8 @@
 
 COSESIMPLE = test.py model.py agent.py
 COSEASTAR = $(COSE) astar.py
-TESTSIMPLE = python3 test.py runall 
-TESTASTAR = python3 test.py runall --step=astar
+TESTSIMPLE = unbuffer python3 test.py runall 
+TESTASTAR = unbuffer python3 test.py runall --step=astar
 MAPPESIMPLE = m1 m2 me
 MAPPEASTAR = $(MAPPESIMPLE) m3 mc
 TARGETSSIMPLE = $(addprefix runall_, $(addsuffix _simple.svg,  $(MAPPEASTAR)))
