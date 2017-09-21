@@ -114,12 +114,15 @@ if __name__ == '__main__':
         for n in range(1,int(arguments['<max_n>'])+1):
             n_step = 0
             print("n = " + str(n))
+            maxiter = mappa.shape[0] * mappa.shape[1] * 10 
             for giro in range(int(arguments['<giri>'])):
                 print("\tgiro = " + str(giro))
                 modello = model.Robosim_model(n, mappa, t["stubborness"], seed=None, step_name=t["step_name"])
                 modello.running = True
                 i = 0
                 while modello.running:
+                    if i > maxiter:
+                        sys.exit(1)
                     i += 1
                     modello.step()
                 n_step += i

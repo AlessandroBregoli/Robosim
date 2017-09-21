@@ -1,6 +1,6 @@
 
 COSESIMPLE = test.py model.py agent.py
-COSEASTAR = $(COSE) astar.py
+COSEASTAR = $(COSESIMPLE) astar.py
 TESTSIMPLE = unbuffer python3 test.py runall 
 TESTASTAR = unbuffer python3 test.py runall --step=astar
 MAPPESIMPLE = m1 m2 me
