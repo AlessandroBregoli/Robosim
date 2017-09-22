@@ -62,6 +62,13 @@ tests =  {
         "n_agents" : 3,
         "stubborness": 0.2,
         "step_name": "simple"
+    },
+    "ma" : {
+        "map" : "ma.txt",
+        "seed" : 33456,
+        "n_agents" : 3,
+        "stubborness": 0.2,
+        "step_name": "simple"
     }
 }
 
@@ -183,7 +190,6 @@ if __name__ == '__main__':
     if arguments['map_cpl']:
         mappa = model.load_map(t['map'])
         empty_cells = np.where(mappa==model.CellState.EMPTY)
-        #print(empty_cells)
         if arguments['--nc']:
             iterations = int(arguments['--nc'])
         else:
@@ -200,6 +206,6 @@ if __name__ == '__main__':
                 if target == x_pos:
                     continue
                 tmp += dijk_dict[target] / max(abs(target[0] - x_pos[0]), abs(target[1] - x_pos[1]))
-            ret_value += tmp /len(index_array)
+            ret_value += tmp /(len(index_array)-1)
         ret_value /= iterations
         print(ret_value)
