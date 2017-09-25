@@ -19,6 +19,7 @@ import model
 import numpy as np
 from docopt import docopt
 import sys
+import json
 
 tests =  {
     "me" : {
@@ -113,7 +114,6 @@ def modded_dijkstra(mappa,center):
         #if u == goal:
         #    return path
     return dist
-
 if __name__ == '__main__':
     arguments = docopt(__doc__, version='Robosim Test')
     t = tests[arguments['<test>']]
@@ -160,11 +160,17 @@ if __name__ == '__main__':
         mappa = model.load_map(t['map'])
         tempi = {}
         tempipern = {}
+        espl_media = {}
+        comun_media = {}
+        tutti_i_frame = {}
         for n in range(1,int(arguments['<max_n>'])+1):
             n_step = 0
+            espl_media[n] = 0
+            comun_media[n] = 0
+            questo_n = []
             print("n = " + str(n))
             maxiter = mappa.shape[0] * mappa.shape[1] * 10 
-            for giro in range(int(arguments['<giri>'])):
+            for giro in range(int(arguments['<giri>'])): 
                 print("\tgiro = " + str(giro))
                 modello = model.Robosim_model(n, mappa, t["stubborness"], seed=None, step_name=t["step_name"])
                 modello.running = True
@@ -175,14 +181,35 @@ if __name__ == '__main__':
                     i += 1
                     modello.step()
                 n_step += i
+                frame = modello.datacollector.get_model_vars_dataframe()
+                m_utili = frame["Mosse utili"]
+                comun = frame["Comunicazioni"]
+                espl_media[n] += m_utili.mean()
+                comun_media[n] += comun.mean()
+                questo_n.append(json.loads(frame.to_json()))
             tempi[n] = n_step/int(arguments['<giri>'])
             tempipern[n] = tempi[n] * (n**0.5)
+            espl_media[n]/= int(arguments['<giri>'])
+            comun_media[n]/= int(arguments['<giri>'])
+            tutti_i_frame[str(n)] = questo_n
+        with open("runall_" + arguments["<test>"] + "_" + t["step_name"]+".json","w") as file:
+            #asd = [x for y in x for x in tutti_i_frame]
+            json.dump(tutti_i_frame,file)
         plt.plot(list(tempi.keys()), list(tempi.values()))
         plt.plot(list(tempipern.keys()), list(tempipern.values()))
         plt.legend(["tempi", "tempi * sqrt(n)"])
         plt.title("Tempi al variare di n")
         plt.savefig("runall_" + arguments["<test>"] + "_" + t["step_name"] + ".svg")
         plt.close()
+        plt.plot(list(espl_media.keys()), list(espl_media.values()))
+        plt.legend(["Media celle esplorate/robot"])
+        plt.savefig("runall_"+arguments["<test>"] + "_" + t["step_name"] + "_espl.svg")
+        plt.close()
+        plt.plot(list(comun_media.keys()), list(comun_media.values()))
+        plt.legend(["Media comunicazioni"])
+        plt.savefig("runall_"+arguments["<test>"] + "_" + t["step_name"] + "_comun.svg")
+        plt.close()
+       #print(tutti_i_frame)
 
     if arguments['export_map']:
         mappa = model.load_map(t['map'])
