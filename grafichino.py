@@ -36,7 +36,7 @@ if __name__ == "__main__":
     
     plt.legend(["Step simple", "Step A*", "Step simple per sqrt(n)", "Step A* per sqrt(n)"])
     plt.title("Tempi al variare di n")
-    plt.savefig("runall_" + mappa + "_tempi.pdf")
+    plt.savefig("runall_" + mappa + "_tempi.svg")
     plt.close()
     
     espl_simple = {int(key):np.mean([np.mean(list(giro["Mosse utili"].values())) for giro in dati_simple[key]]) for key in dati_simple}
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     plt.plot(*dict_yx(espl_astar))
     plt.title("Media di celle esplorate per robot")
     plt.legend(["Step simple", "Step A*"])
-    plt.savefig("runall_" + mappa + "_espl.pdf")
+    plt.savefig("runall_" + mappa + "_espl.svg")
     plt.close()
     
     com_simple = {int(key):np.mean([np.mean(list(giro["Comunicazioni"].values())) for giro in dati_simple[key]]) for key in dati_simple}
@@ -55,5 +55,5 @@ if __name__ == "__main__":
     plt.plot(*dict_yx(com_astar))
     plt.title("Media delle comunicazioni")
     plt.legend(["Step simple", "Step A*"])
-    plt.savefig("runall_" + mappa + "_comun.pdf")
+    plt.savefig("runall_" + mappa + "_comun.svg")
     plt.close()
