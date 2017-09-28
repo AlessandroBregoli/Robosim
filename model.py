@@ -48,7 +48,7 @@ class Robosim_model(Model):
 
     def step(self):
         self.communications = 0
-        self.usefull_moves = [0 for x in range(10)]
+        self.usefull_moves = 0
         for agent in self.schedule.agents:
             self.look(agent)
         self.find_border_cell()
@@ -109,7 +109,7 @@ class Robosim_model(Model):
                     explored_cells += 1
                 self.explored_map[y1][x1] = self.simulation_map[y1][x1]
         
-        self.usefull_moves[explored_cells] += 1
+        self.usefull_moves += explored_cells
     def norm2mesa(self, pos): 
         return (pos[0], (self.simulation_map.shape[0] - pos[1] - 1))
     def mesa2norm(self, pos):
@@ -120,7 +120,7 @@ class Robosim_model(Model):
         mappa = self.explored_map
         return np.count_nonzero(mappa != CellState.UNEXPLORED)
     def get_usefull_moves(self, model):
-        return self.usefull_moves
+        return self.usefull_moves / self.num_agents
 class CellState(Enum):
     UNEXPLORED = 0
     EMPTY = 1
