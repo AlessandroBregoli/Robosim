@@ -25,3 +25,4 @@ $(GRAFICI1): runall_%_tempi.pdf: $$(wildcard runall_%_simple.json runall_%_astar
 	inkscape --export-pdf=runall_$*_tempi.pdf runall_$*_tempi.svg 
 	inkscape --export-pdf=runall_$*_espl.pdf runall_$*_espl.svg 
 	inkscape --export-pdf=runall_$*_comun.pdf runall_$*_comun.svg 
+	inkscape --export-pdf=runall_$*_std_tempi.pdf runall_$*_std_tempi.svg 

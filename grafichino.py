@@ -39,6 +39,17 @@ if __name__ == "__main__":
     plt.savefig("runall_" + mappa + "_tempi.svg")
     plt.close()
     
+
+    step_std_simple = {int(key):np.std([len(giro["Comunicazioni"]) for giro in dati_simple[key]]) for key in dati_simple}
+    step_std_astar = {int(key):np.std([len(giro["Comunicazioni"]) for giro in dati_astar[key]]) for key in dati_astar}
+    plt.plot(*dict_yx(step_std_simple))
+    plt.plot(*dict_yx(step_std_astar))
+    plt.legend(["Step simple", "Step A*"])
+    plt.title("Deviazione standard dei tempi al variare di n")
+    
+    plt.savefig("runall_" + mappa + "_std_tempi.svg")
+    plt.close()
+
     espl_simple = {int(key):np.mean([np.mean(list(giro["Mosse utili"].values())) for giro in dati_simple[key]]) for key in dati_simple}
     espl_astar = {int(key):np.mean([np.mean(list(giro["Mosse utili"].values())) for giro in dati_astar[key]]) for key in dati_astar}
     plt.plot(*dict_yx(espl_simple))
