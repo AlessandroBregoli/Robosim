@@ -30,11 +30,18 @@ if __name__ == "__main__":
     plt.plot(*dict_yx(step_astar))
    
     y,x = dict_yx(step_simple)
-    plt.plot(y,np.multiply(np.sqrt(y), x))
+
+    A = np.vstack([[x[0]/y[x1] - x[0] for x1 in range(len(x))]]).T
+    p= np.linalg.lstsq(A,[x[y1]-x[0] for y1 in range(len(y))])[0]
+    plt.plot(y,[(1-p)*x[0]+p*x[0]/yi for yi in y])
+
     y,x = dict_yx(step_astar)
-    plt.plot(y,np.multiply(np.sqrt(y),x))
     
-    plt.legend(["Step simple", "Step A*", "Step simple per sqrt(n)", "Step A* per sqrt(n)"])
+    A = np.vstack([[x[0]/y[x1] - x[0] for x1 in range(len(x))]]).T
+    p= np.linalg.lstsq(A,[x[y1]-x[0] for y1 in range(len(y))])[0]
+    plt.plot(y,[(1-p)*x[0]+p*x[0]/yi for yi in y])
+    
+    plt.legend(["Step simple", "Step A*", "Step simple Amdhal", "Step A* Amdhal"])
     plt.title("Tempi al variare di n")
     plt.savefig("runall_" + mappa + "_tempi.svg")
     plt.close()
