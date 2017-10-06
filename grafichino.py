@@ -27,23 +27,27 @@ if __name__ == "__main__":
     step_astar = {int(key):np.mean([len(giro["Comunicazioni"]) for giro in dati_astar[key]]) for key in dati_astar}
     
     plt.plot(*dict_yx(step_simple))
-    plt.plot(*dict_yx(step_astar))
+    
    
     y,x = dict_yx(step_simple)
 
     A = np.vstack([[x[0]/y[x1] - x[0] for x1 in range(len(x))]]).T
     p= np.linalg.lstsq(A,[x[y1]-x[0] for y1 in range(len(y))])[0]
     plt.plot(y,[(1-p)*x[0]+p*x[0]/yi for yi in y])
-
+    plt.legend(["Step simple", "Legge di Amdhal"])
+    plt.title("Tempi al variare di n")
+    plt.savefig("runall_" + mappa + "_tempi_simple.svg")
+    plt.close()
+    plt.plot(*dict_yx(step_astar))
     y,x = dict_yx(step_astar)
     
     A = np.vstack([[x[0]/y[x1] - x[0] for x1 in range(len(x))]]).T
     p= np.linalg.lstsq(A,[x[y1]-x[0] for y1 in range(len(y))])[0]
     plt.plot(y,[(1-p)*x[0]+p*x[0]/yi for yi in y])
     
-    plt.legend(["Step simple", "Step A*", "Step simple Amdhal", "Step A* Amdhal"])
+    plt.legend(["Step A*", "Legge di Amdhal"])
     plt.title("Tempi al variare di n")
-    plt.savefig("runall_" + mappa + "_tempi.svg")
+    plt.savefig("runall_" + mappa + "_tempi_astar.svg")
     plt.close()
     
 
