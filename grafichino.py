@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
     A = np.vstack([[x[0]/y[x1] - x[0] for x1 in range(len(x))]]).T
     p= np.linalg.lstsq(A,[x[y1]-x[0] for y1 in range(len(y))])
-    print(mappa + "step simple" +str(p))
+    print(mappa + " step simple p=" +str(p[0]) + " err=" + str((p[1]/len(y))**(0.5)))
     p = p[0]
     plt.plot(y,[(1-p)*x[0]+p*x[0]/yi for yi in y])
     plt.legend(["Step simple", "Legge di Amdhal"])
@@ -46,7 +46,7 @@ if __name__ == "__main__":
     
     A = np.vstack([[x[0]/y[x1] - x[0] for x1 in range(len(x))]]).T
     p= np.linalg.lstsq(A,[x[y1]-x[0] for y1 in range(len(y))])
-    print(mappa + "step A*" +str(p))
+    print(mappa + " step A* p=" +str(p[0]) + " err=" + str((p[1]/len(y))**(0.5)))
     p=p[0]
     plt.plot(y,[(1-p)*x[0]+p*x[0]/yi for yi in y])
     
