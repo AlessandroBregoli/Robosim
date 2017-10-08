@@ -32,7 +32,9 @@ if __name__ == "__main__":
     y,x = dict_yx(step_simple)
 
     A = np.vstack([[x[0]/y[x1] - x[0] for x1 in range(len(x))]]).T
-    p= np.linalg.lstsq(A,[x[y1]-x[0] for y1 in range(len(y))])[0]
+    p= np.linalg.lstsq(A,[x[y1]-x[0] for y1 in range(len(y))])
+    print(mappa + "step simple" +str(p))
+    p = p[0]
     plt.plot(y,[(1-p)*x[0]+p*x[0]/yi for yi in y])
     plt.legend(["Step simple", "Legge di Amdhal"])
     plt.title("Tempi al variare di n")
@@ -43,7 +45,9 @@ if __name__ == "__main__":
     y,x = dict_yx(step_astar)
     
     A = np.vstack([[x[0]/y[x1] - x[0] for x1 in range(len(x))]]).T
-    p= np.linalg.lstsq(A,[x[y1]-x[0] for y1 in range(len(y))])[0]
+    p= np.linalg.lstsq(A,[x[y1]-x[0] for y1 in range(len(y))])
+    print(mappa + "step A*" +str(p))
+    p=p[0]
     plt.plot(y,[(1-p)*x[0]+p*x[0]/yi for yi in y])
     
     plt.legend(["Step A*", "Legge di Amdhal"])
