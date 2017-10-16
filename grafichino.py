@@ -32,21 +32,27 @@ if __name__ == "__main__":
     y,x = dict_yx(step_simple)
 
     A = np.vstack([[x[0]/y[x1] - x[0] for x1 in range(len(x))]]).T
-    p= np.linalg.lstsq(A,[x[y1]-x[0] for y1 in range(len(y))])[0]
+    p= np.linalg.lstsq(A,[x[y1]-x[0] for y1 in range(len(y))])
+    print(mappa + " step simple p=" +str(p[0]) + " err=" + str((p[1]/len(y))**(0.5)))
+    p = p[0]
     plt.plot(y,[(1-p)*x[0]+p*x[0]/yi for yi in y])
     plt.legend(["Step simple", "Legge di Amdhal"])
     plt.title("Tempi al variare di n")
+    plt.xticks(y)
     plt.savefig("runall_" + mappa + "_tempi_simple.svg")
     plt.close()
     plt.plot(*dict_yx(step_astar))
     y,x = dict_yx(step_astar)
     
     A = np.vstack([[x[0]/y[x1] - x[0] for x1 in range(len(x))]]).T
-    p= np.linalg.lstsq(A,[x[y1]-x[0] for y1 in range(len(y))])[0]
+    p= np.linalg.lstsq(A,[x[y1]-x[0] for y1 in range(len(y))])
+    print(mappa + " step A* p=" +str(p[0]) + " err=" + str((p[1]/len(y))**(0.5)))
+    p=p[0]
     plt.plot(y,[(1-p)*x[0]+p*x[0]/yi for yi in y])
     
     plt.legend(["Step A*", "Legge di Amdhal"])
     plt.title("Tempi al variare di n")
+    plt.xticks(y)
     plt.savefig("runall_" + mappa + "_tempi_astar.svg")
     plt.close()
     
@@ -57,7 +63,7 @@ if __name__ == "__main__":
     plt.plot(*dict_yx(step_std_astar))
     plt.legend(["Step simple", "Step A*"])
     plt.title("Deviazione standard dei tempi al variare di n")
-    
+    plt.xticks(y)
     plt.savefig("runall_" + mappa + "_std_tempi.svg")
     plt.close()
 
@@ -67,6 +73,7 @@ if __name__ == "__main__":
     plt.plot(*dict_yx(espl_astar))
     plt.title("Media di celle esplorate per robot")
     plt.legend(["Step simple", "Step A*"])
+    plt.xticks(y)
     plt.savefig("runall_" + mappa + "_espl.svg")
     plt.close()
     
@@ -77,5 +84,6 @@ if __name__ == "__main__":
     plt.plot(*dict_yx(com_astar))
     plt.title("Media delle comunicazioni")
     plt.legend(["Step simple", "Step A*"])
+    plt.xticks(y)
     plt.savefig("runall_" + mappa + "_comun.svg")
     plt.close()
