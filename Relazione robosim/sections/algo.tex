@@ -1,0 +1,87 @@
+Per poter analizzare il modello è stato necessario implementare alcuni algoritmi
+che soddisfacessero due obiettivi fondamentali:
+\begin{itemize}
+  \item Ricerca dell'obiettivo
+  \item Path finding
+\end{itemize}
+
+\subsection{Ricerca dell'obiettivo}
+  Per selezionare il miglior obiettivo da raggiungere è stato progettato un algoritmo
+  che seleziona la cella di bordo con il minor valore calcolato con la seguente
+  equazione:
+  $$target\_value = \delta(pos, border\_cell)^2 - \sum _{x \in other\_robot}{\delta(x,border\_cell)^2}$$
+  dove le celle di bordo sono state definite come quelle celle che sono transitabili e che confinano con almeno una cella 
+  non esplorata.
+  Questa euristica tenta dunque di selezionare un obiettivo che sia vicino al robot in analisi e lontano dagli altri.
+  Il concetto di "lontano" è stato implementato come distanza euclidea; questa scelta è molto efficiente a livello
+  implementativo, tuttavia potrebbe risultare subottimale per quanto riguarda la scelta dei goal in quanto non tiene
+  conto di possibili ostacoli durante il percorso.
+  Per rendere più stabile la scelte di un goal e non farlo cambiare ad ogni tick, deve verificarsi una delle seguenti condizioni perché possa essere modificato:
+
+  \begin{itemize}
+    \item La cella selezionata non è più obiettivo in quanto qualcuno (anche il robot stesso) ha esplorato tutti 
+          i suoi dintorni
+    \item Viene trovato un obiettivo molto migliore; in questo caso la soglia di "testardaggine" del robot viene definita da un
+        parametro che determina di quanto un obiettivo deve essere migliore di quello attuale per poterlo sostituire
+  \end{itemize}
+  \newpage
+  \renewcommand{\fcolorbox}[4][]{#4}
+  \inputminted[linenos,fontsize=\footnotesize]{python}{algoritmi/goal.py}
+    Andiamo ora ad analizzare la complessità dell'argoritmo: Sia N il numero di 
+    celle e A il numero di agenti:
+    \begin{enumerate}
+      \item Ricerca delle celle di frontiera; complessità $O(N)$
+      \item Calcolo del punteggio di ogni cella rispetto all'agente; complessità $O(N\cdot A)$
+    \end{enumerate}
+    Di conseguenza possiamo dire che l'algoritmo per la ricerca dell'obiettivo ha complessità:
+    $$O(N) + O(N \cdot A) = O(N \cdot A)$$
+  \newpage
+\subsection{Path finding}
+  Il problema del path finding è un problema ampiamente trattato dalla letteratura sia
+  dal punto di visto videoludico che da quello robotico; per questo motivo sono stati
+  provati diversi algoritmi; alcuni suggeriti dalla letteratura mentre altri progettati da zero.
+  
+  Ogniqualvolta il "territorio" non è conosciuto a priori bisogna tener conto della
+  necessità di ricalcolare il percorso quando viene scoperto un ostacolo; troviamo in
+  \cite{ferguson2005guide} una descrizione dettagliata degli algoritmi di planning - replanning;
+  inoltre gli algoritmi "anytime" permettono di raffinare nel tempo un path subottimale, e
+  tale procedimento è applicabile ad A*. Tuttavia ciò non è presente nella nostra
+  implementazione.
+  \subsubsection{Algoritmo di Dijkstra}
+    La mappa su cui si muovono i robot è una griglia ma può essere facilmente vista
+    come un grafo dove ogni cella è un nodo connesso solo con le celle adiacenti. A questo
+    punto è facile applicare l'algoritmo di Dijkstra per poter
+    trovare un miglior percorso dalla posizione del robot fino all'obiettivo selezionato.
+  \subsubsection{Algoritmo $A^*$}
+  \label{complastar}
+  L'algoritmo $A^*$ \cite{wiki:A*} è ben noto nel campo delle simulazioni ad agenti
+  perché può sfruttare in maniera euristica la struttura spaziale della
+  griglia: l'algoritmo si comporta come una ricerca depth-first sull'albero
+  dei percorsi, ma dà la precedenza alla ricerca lungo i percorsi migliori
+  secondo un'euristica specificabile; nel nostro caso utilizziamo la
+  distanza euclidea.
+  \inputminted[linenos,fontsize=\footnotesize]{python}{algoritmi/astar.py}
+  Segue la struttura dello step che utilizza l'algoritmo $A*$.
+  \inputminted[linenos,fontsize=\footnotesize]{python}{algoritmi/step_astar.py}
+  La complessità dell'algoritmo $A^*$ nel caso peggiore è : $O(b^d)$ dove b è il numero di
+  possibili successori per ogni cella e d è la lunghezza dello shortest path. 
+  \newpage
+  \subsubsection{Algoritmo greedy (simple)}
+  \label{complgreedy}
+    Questo algoritmo è stato progettato per essere di facile computazione; per questa ragione non calcola un path
+    ma seleziona una mossa per volta utilizzando come metrica la distanza euclidea. Scegliendo ad ogni mossa
+    la cella più libera più vicina però si richia di incorrere in loop che impediscono ad un robot di superare
+    determinati ostacoli. Per questa ragione si è deciso di aggiunre come ulteriore clausola il fatto che fino a 
+    quando un robot non cambia obiettivo non può passare due volte sulla stessa casella.
+    Nel caso in cui però il robot non si possa più muovere perchè circondato da celle già percorse vengono rese
+    nuovamente percorribili delle celle già percorse partendo da quelle più recenti e andando indietro; le celle vengono
+    rese percorribili se hanno almeno un vicino percorribile.
+    \inputminted[linenos, fontsize=\footnotesize]{python}{algoritmi/simple.py}
+    La complessità di questo algoritmo dipende prevalentemente dal numero di celle già percorse; si potrebbe dunque
+    dire che si tratta di un algoritmo a complessità : 
+    \begin{itemize}
+      \item $\Omega(1)$ nel caso migliore
+      \item $O(s^2)$ nel caso peggiore  
+    \end{itemize}
+    dove s è il numero di celle già percorse durante il perseguimento dell'obiettivo attuale.
+    

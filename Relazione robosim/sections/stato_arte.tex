@@ -1,0 +1,81 @@
+Nel campo dell'esplorazione multi-robotica si trovano in letteratura approcci
+diversi che coprono problematiche simili. 
+Troviamo ad esempio \cite{gerkey2004formal} guarda al modello
+decisionale degli agenti sotto l'aspetto della task allocation, approccio da cui abbiamo tratto spunto per il nostro lavoro.
+Non mancano tuttavia esempi di modelli, come in \cite{bourgault2002information},
+che analizzano il problema con gli strumenti della teoria dell'informazione;
+tale lavoro dà anche soluzione al problema di navigazione, stabilire la propria
+posizione nell'ambiente, mentre in \cite{dudek1996taxonomy} si guarda al
+problema da tutt'altra prospettiva ed il solo posizionamento relativo tra robot
+vicini viene usato per condurre a termine l'esplorazione.
+
+Vale la pena sottolineare che nel nostro lavoro non ci occupiamo della
+navigazione e la posizione assoluta degli agenti sulla griglia è sempre nota con
+precisione.
+
+\cite{gerkey2004formal} Sviluppando un sistema composto da robot multipli che devono cooperare 
+una delle domande chiave è: "quale robot deve eseguire che task?"; 
+a questa domanda tenta di rispondere la branca della ricerca che
+si occupa di multi-robot task allocation (MRTA).
+Per task si intende un sottogoal necessario per ottenere l'obiettivo generale.
+
+\subsection{Funzione da ottimizzare}
+  Per trattare MRTA in un contesto di ottimiziazione è necessario decidere cosa deve essere
+  ottimizzato. Idealmente il goal è di ottimizzare le performance del sistema, ma questo valore
+  è spesso difficile da misurare durante l'esecuzione del sistema.
+  Inoltre, quando si sceglie tra diverse possibilità, l'impatto sulle performance del sistema di ogni opzione
+  solitamente non è conosciuto; quindi è necessario una stima delle performance. Viene dunque introdotto
+  il concetto di "utility" definito come quel valore che:
+  \begin{enumerate}
+    \item Rappresenta la qualità dell'esecuzione del compito assegnato dati il
+          metodo e l'equipaggiamento.
+    \item Rappresenta il costo in risorse dati i requisiti spazio-temporali del
+          lavoro assegnato.
+  \end{enumerate}
+  
+\subsection{Un approccio collaborativo}
+  \cite{burgard2002collaborative} L'obiettivo di un processo di esplorazione è quello di esplorare l'intero ambiente 
+  nel minor tempo possibile. Questo modello utilizza un ambiente discretizzato attraverso una griglia. Durante la 
+  scelta degli obiettivi per i robot vengono tenunte in considerazione le celle di frontiera (celle esplorate con
+  almeno un vicino non esplorato) e si calcola una funzione di costo che è inversamente proporzionale alla distanza
+  dal robot per cui si sta cercando l'obiettivo e direttamente proporzionale al numero di robot che si stanno diriginedo
+  verso quella cella. Un altro dato da considerare è l'utilità di una cella di frontiera. Tale valore è
+  difficile da calcolare tuttavia possiamo aspettarci che una cella obiettivo di un robot avrà un valore di utilità
+  inferiore per gli altri. \\
+  La selezione del target appropriato per ogni robot tiene in considerazione il costo dello spostamento verso il target
+  e l'utilità della cella target. In particolare per ogni robot $i$ cerchiamo un compromesso tra il costo $V^i_t$ di
+  muoversi verso la cella $t$ e l'utilità $U_t$ di $t$.
+\subsection{Complessità delle mappe}
+  Sono state sviluppate diverse metriche per caratterizzare la "difficoltà" di
+  una mappa; la maggior parte degli approcci in letteratura si dedicano al
+  problema affine di calcolare la difficoltà di un labirinto con una uscita e un
+  ingresso; per dare una soluzione elegante a tale problema ad esempio,
+  \cite{amancio2011concepts} e \cite{mcclendon2001complexity} si basano su una
+  rappresentazione a grafo dell'ambiente e ne calcolano le proprietà; in più
+  in \cite{amancio2011concepts} si fa riferimento all'``absorption time'', ovvero
+  la probabilità che un cammino randomico arrivi dall'entrata all'uscita.
+  Tuttavia per il nostro approccio non è sufficiente considerare la mappa un
+  labirinto.
+\subsection{Legge di Amdhal}
+  La legge di Amdhal\cite{amdhal} in informatica è quella formula che rappresenta 
+  l'aumento teorico di velocità di esecuzione derivante da una 
+  parallelizzazione del problema. 
+  $$S_{lantency}(s) = \frac{1}{(1-p) + \frac{p}{s}}$$
+  dove:
+  \begin{itemize}
+    \item $S_{lantency}$: é il guadagno teorico di performance dell'intero task
+    \item $s$: è il fattore che rappresenta le risorse del sistema
+    \item $p$: rappresenta la proporzione tra la parte di sitema parallelizzabile e quelle non parallelizzabile
+  \end{itemize}
+  
+  $$\begin{cases}
+    S_{latency}(s) \leq \frac{1}{1 - p} \\
+    \lim\limits_{s \to \infty} S_{latency}(s) = \frac{1}{1 - p}.
+    \end{cases}$$
+  Da questo possiamo evincere che aumentando all'infinito le risorse di parallelizzazione il sistema raggiungerà un minimo rappresentato
+  dalla sua parte non parallelizzabile.
+  Una possibile derivazione di questa formula è l'equazione che ricava il
+  tempo teorico di esecuzione del sistema:
+  $$T(s) = (1-p)T + \frac{p}{s}T$$
+  
+  

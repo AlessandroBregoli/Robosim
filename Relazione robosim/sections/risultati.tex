@@ -1,0 +1,79 @@
+\subsection{Misurazioni}
+Per giudicare la bontà degli algoritmi sono state utilizzate varie mappe di 
+diversa complessità (calcolata come in sezione \ref{mapcomplex}).
+Per valutare i risultati abbiamo raccolto le seguenti misure:
+
+\begin{itemize}
+    \item Tempi medi di esplorazione (funzione del numero di robot)
+    \item Efficienza media di esplorazione (funzione del tempo)
+    \item Quantità media di comunicazione (funzione del tempo)
+    \item La deviazione standard dei tempi ottenuti
+    \item La regressione rispetto alla funzione $T(s) = (1-p)T + \frac{p}{s}T$
+          dei valori dei tempi; forniamo il parametro $p$ e l'errore
+          di regressione come deviazione standard dalla funzione ``fittata''.
+\end{itemize}
+\newcommand{\mapComplexity}[0]{}
+\newcommand{\mapDescription}[0]{}
+\newcommand{\nomeMappa}[0]{}
+\newcommand{\pSimpleFit}[0]{}
+\newcommand{\pAstarFit}[0]{}
+\newcommand{\errSimpleFit}[0]{}
+\newcommand{\errAstarFit}[0]{}
+
+
+\foreach \s in { me, m1, m2, m3, mc} {
+		%\newpage
+    \input{sections/mappa_\s.tex}
+    \subsection{\nomeMappa}
+
+		\begin{figure}[H]
+    		\includegraphics[width=1\textwidth]{presentaz/grafici/\s.pdf}
+    		\caption{Questa mappa ha complessità \mapComplexity}
+    	\end{figure}
+    	
+    	\mapDescription    	
+    	
+    	\begin{figure}[H]
+          \centering
+          \makebox[\textwidth][c]{
+		  \subfloat[Tempi dell'algoritmo simple sulla \nomeMappa. ]{ 
+			\shortstack{
+		      \includegraphics[width=0.7\textwidth]{immagini/runall_\s_tempi_simple.pdf} \\
+			  \small{Risultati del fit: $p = \pSimpleFit, std=\errSimpleFit$}}
+			}
+			\subfloat[Tempi dell'algoritmo $A*$ sulla \nomeMappa.]{
+			\shortstack{
+			  \includegraphics[width=0.7\textwidth]{immagini/runall_\s_tempi_astar.pdf} \\
+			  \small{Risultati del fit: $p = \pAstarFit, std=\errAstarFit$}}
+			}
+		  }
+		\end{figure}
+		\begin{figure}[H]
+    	  \makebox[\textwidth][c]{
+		    \subfloat[Esplorazione della \nomeMappa]{
+			  \includegraphics[width=0.7\textwidth]{immagini/runall_\s_espl.pdf}
+			}
+			\subfloat[Comunicazioni]{
+			  \includegraphics[width=0.7\textwidth]{immagini/runall_\s_comun.pdf}
+			}
+	      }
+		\end{figure}
+		\begin{figure}[H]
+    	  \centering
+    	  \makebox[\textwidth][c]{
+			\subfloat[Deviazione standard \nomeMappa]{ 
+			  \includegraphics[width=0.7\textwidth]{immagini/runall_\s_std_tempi.pdf}
+		    }
+		  }
+		\end{figure}
+		
+}
+
+\subsection{Osservazioni sui risultati}
+    Tutti i test sono stati svolti 5 volte per ogni possibile numero di agenti tra 1 e 20;
+    tuttavia per l'algoritmo $A^*$ è stata utilizzato un valore di stubborness pari a
+    0.5 mentre per l'algoritmo simple ne è stato utilizzato uno pari a 0.3; questa
+    scelta deriva dal fatto che l'algoritmo simple essendo greedy entra con più facilità
+    in loop con effetti quantomeno deleteri. Ciononostante è capitato, durante la
+    campagna di simulazione, che alcune mappe causassero un loop nell'algoritmo simple. 
+    

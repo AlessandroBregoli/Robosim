@@ -1,0 +1,46 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[italian]{babel}
+\usepackage{minted}
+\usepackage{pgffor}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{amsmath}
+\usepackage{tabularx}
+\usepackage[bookmarks,hidelinks]{hyperref}
+\usepackage[style=numeric-comp,hyperref,useprefix,backend=bibtex]{biblatex}
+\bibliography{biblio.bib}
+\title{Progetto di sistemi complessi: modelli e simulazione}
+\author{Pietro Brenna (781840) \\ Alessandro Bregoli (780711)}
+\date{}
+\begin{document}
+
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+
+\section{Introduzione}
+  \input{sections/introduction.tex}
+\newpage
+\section{Stato dell'arte}
+  \input{sections/stato_arte.tex}
+\newpage
+\section{Modello}
+  \input{sections/modello.tex}
+\newpage
+\section{Algoritmi}
+  \input{sections/algo.tex}
+\newpage
+\section{Risultati}
+  \input{sections/risultati.tex}
+\newpage
+\section{Conclusioni}
+    \input{sections/conclusioni.tex}
+\newpage
+\nocite{*}
+ \printbibliography
+
+\end{document}

@@ -1,0 +1,40 @@
+I risultati sono generalmente coerenti con le aspettative; tuttavia particolari
+conformazioni possono migliorare considerevolmente il comportamento
+dell'algoritmo simple. Spesso i due algoritmi sono comparabili; tuttavia è bene
+notare che la performance di $A*$ è probabilmente limitata dall'algoritmo per la 
+scelta del goal, di natura greedy: infatti quest'ultimo non sfrutta
+l'ottimalità del path calcolato da $A*$.
+
+Nei risultati non è mai stata presa in considerazione la complessità degli
+algoritmi come metrica, tuttavia, dato lo studio nelle sezioni \ref {complastar}
+e \ref{complgreedy}, è chiaro che la scelta dell'algoritmo dovrebbe essere
+influenzata dalla disponibilità di potenza computazionale dei singoli strumenti.
+
+\subsection{Metrica di impedimento medio}
+La metrica da noi sviluppata ha lo svantaggio di essere computazionalmente molto
+onerosa, e di non predire fedelmente il comportamento del nostro algoritmo ``simple'';
+tuttavia è anche da imputarsi dal fatto che tale algoritmo è solo parzialmente greedy,
+in quanto l'accorgimento delle ``smelly cells'' gli conferisce maggior resistenza
+contro i loop.
+
+Sosteniamo tuttavia che la metrica sia effettivamente indicativa della difficoltà
+di spostarsi sulla mappa con un algoritmo greedy, e più generalmente fornisca
+una buona stima dell'aumento di lunghezza di un percorso dettata dalla topologia
+della mappa.
+\subsection{Possibili sviluppi futuri}
+Sarebbe interessante caratterizzare con precisione la formazione dei
+comportamenti periodici in relazione ai parametri di stubborness e della
+complessità della mappa; inoltre si potrebbe ideare una metodologia di detection
+e recovery dei loop, o comportamenti non del tutto deterministici volti a
+renderne improbabile la formazione.
+
+Un ambito di ulteriore sviluppo è la funzione di selezione del goal; un'euristica
+che tenga maggior conto del territorio potrebbe aumentare l'efficienza
+dell'esplorazione.
+
+Se da un lato l'intero modello è stato pensato come simulazione software, ci si
+può chiedere la fattibilità di un'implementazione hardware, e le sue caratteristiche;
+il modello richiede un sistema di comunicazione robusto, di capacità che dipende
+dal numero dei robot impiegati; inoltre la necessità di avere una comunicazione
+broadcast costante tra i robot richiede un raggio di comunicazione almeno pari alla
+distanza tra i 2 punti più lontani raggiungibili dagli agenti.

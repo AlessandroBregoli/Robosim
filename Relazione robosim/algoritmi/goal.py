@@ -1,0 +1,31 @@
+def find_goal(analized_agent):
+    for x,y in frontier_cells:
+    
+        #Viene calcolata la distanza geometrica da ogni cella 
+        #di confine con l'agente di cui si sta cercando
+        #il goal
+        
+        score = geometric_distance((x,y), analized_agent.pos)^2
+        for agent in agents:
+            if agent.unique_id == analized_agent.unique_id:
+                continue
+                
+            #Per ogni agente che non sia l'agente in analisi si va a penalizzare
+            #il punteggio della cella inversamente alla loro distanza
+            
+            score -= distanza_geometrica((x,y), agent.pos)^2
+        if score < best_score:
+            best_score = score
+            best_goal = (x,y)
+        if (x,y) == old_goal:
+            recalculated_old_goal_score = score
+            
+    #Facendo uso della variabile "stubborness" si va a pesare l'obiettivo
+    #vecchio prima di confrontarlo con quello
+    #nuovo; più l'agente è testardo meno sarà propenso a cambiare obiettivo
+        
+    if (recalculated_old_goal_score * analized_agent.stubborness < best_score  
+          or analized_agent.old_goal == best_goal):
+        return analized_agent.old_goal
+
+    return best_goal

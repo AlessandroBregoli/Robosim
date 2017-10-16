@@ -1,0 +1,13 @@
+
+La modellazione ad agenti è senza dubbio un metodo valido per simulare l'esplorazione
+di uno spazio da parte di robot; ciò che distingue i vari approcci studiati è 
+l'architettura dell'agente-robot, i metodi di interazione, il modello decisionale.
+
+Nei modelli esistenti si cerca l'ottimalità dell'esplorazione (come tempo, come lunghezza dei percorsi), ed emergono due approcci fondamentali:
+\begin{itemize}
+	\item Un solo robot costoso (computazionalmente) che ricerca cerca di approssimare l'esplorazione ottimale
+	\item Diversi robot poco costosi coordinati da un nodo centrale (costoso computazionalmente)
+\end{itemize}
+Entrambi gli approcci soffrono di una caratteristica indesiderabile: hanno un single point of failure che rende inutilizzabile l'intero modello.
+
+Il nostro lavoro rinuncia all'ottimalità dell'esplorazione: accontentandosi di un comportamento "buono" anche se non ottimale, è possibile eliminare il coordinamento centrale, mantenere i vari robot poco costosi e ottenere robustezza di comportamento.
